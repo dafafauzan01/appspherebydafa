@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppSphere</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body { background-color: #0a0e17; color: #e0e6ed; font-family: 'Segoe UI', sans-serif; padding-bottom: 90px; background-image: radial-gradient(circle at top center, #1a2235 0%, #0a0e17 70%); }
+        .app-header { background: rgba(10, 14, 23, 0.9); backdrop-filter: blur(15px); padding: 15px 0; border-bottom: 1px solid #1c263d; position: sticky; top: 0; z-index: 1000; }
+        .logo-text { font-size: 24px; font-weight: 800; background: linear-gradient(45deg, #4facfe, #a6c1ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px; text-decoration: none; display: block; text-shadow: 0 0 20px rgba(79, 172, 254, 0.3); margin-bottom: 5px; }
+        .search-box { background: #131a2a; border: 1px solid #2a3a5a; border-radius: 50px; color: #fff; padding: 12px 45px 12px 20px; width: 100%; outline: none; transition: 0.3s; font-size: 14px; }
+        .search-box:focus { border-color: #4facfe; box-shadow: 0 0 15px rgba(79, 172, 254, 0.3); }
+        .search-box::placeholder { color: #a0aec0; }
+        .hero-banner { width: 100%; height: 180px; object-fit: cover; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); border: 1px solid #1c263d; }
+        .card-product { border: 1px solid #1c263d; border-radius: 15px; background: #131a2a; color: white; cursor: pointer; transition: 0.3s; height: 100%; overflow: hidden; position: relative; }
+        .card-product:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(79, 172, 254, 0.2); border: 1px solid #4facfe; }
+        .product-img { height: 140px; width: 100%; object-fit: cover; }
+        .card-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        .card-price { font-size: 13px; font-weight: bold; color: #4facfe; }
+        .filter-scroll { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; scrollbar-width: none; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .btn-filter { border-radius: 25px; border: 1px solid #2a3a5a; background: #131a2a; color: #a0aec0; padding: 8px 20px; margin-right: 8px; font-size: 13px; transition: 0.3s; }
+        .btn-filter.active, .btn-filter:hover { background: linear-gradient(45deg, #4facfe, #00f2fe); color: #fff; border: none; font-weight: bold; transform: scale(1.05); box-shadow: 0 0 15px rgba(79, 172, 254, 0.4); }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0a0e17; border-top: 1px solid #1c263d; display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); }
+        .nav-item { text-align: center; color: #718096; font-size: 11px; text-decoration: none; width: 33%; cursor: pointer; transition: 0.2s; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
+        .nav-item.active { color: #4facfe; text-shadow: 0 0 10px rgba(79, 172, 254, 0.5); }
+        .form-label-custom { font-size: 12px; color: #a0aec0; margin-bottom: 4px; display: block; font-weight: bold; }
+        .form-control-dark { background: #1c263d !important; border: 1px solid #2a3a5a !important; color: #ffffff !important; border-radius: 8px; padding: 10px; }
+        .form-control-dark:focus { border-color: #4facfe !important; box-shadow: 0 0 10px rgba(79, 172, 254, 0.2) !important; }
+        .form-control-dark::placeholder { color: #a0aec0 !important; opacity: 1; }
+        .modal-content { background-color: #131a2a; color: white; border: 1px solid #2a3a5a; border-radius: 15px; }
+        .btn-blue-gradient { background: linear-gradient(45deg, #4facfe, #00f2fe); border: none; color: white; font-weight: bold; }
+        .btn-blue-gradient:hover { background: linear-gradient(45deg, #00f2fe, #4facfe); box-shadow: 0 0 15px rgba(79, 172, 254, 0.4); color: white; }
+        .variant-option { border: 1px solid #2a3a5a; border-radius: 12px; padding: 15px; margin-bottom: 10px; cursor: pointer; background: #1c263d; color: white; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .variant-option.selected { border: 1px solid #4facfe; background: #131a2a; box-shadow: 0 0 15px rgba(79, 172, 254, 0.2); }
+        .desc-box-dynamic { background: #1c263d; padding: 12px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; border-left: 3px solid #4facfe; }
+        .timer-box { background: rgba(79, 172, 254, 0.1); color: #4facfe; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold; border: 1px dashed #4facfe; margin-bottom: 15px; }
+        .step-item { display: flex; align-items: center; margin-bottom: 15px; background: #1c263d; padding: 15px; border-radius: 12px; border: 1px solid #2a3a5a; }
+        .step-icon { width: 45px; height: 45px; background: linear-gradient(45deg, #4facfe, #00f2fe); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; margin-right: 15px; flex-shrink: 0; box-shadow: 0 0 10px rgba(79, 172, 254, 0.3); }
+        .step-text { font-size: 14px; color: #e0e6ed; text-align: left; }
+    </style>
+</head>
+<body>
+
+    <div class="app-header shadow-sm">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><a href="index.html" class="logo-text"><i class="fas fa-globe-asia me-2"></i>AppSphere</a></div>
+                <a href="login.html" class="text-secondary"><i class="fas fa-user-circle fa-2x"></i></a>
+            </div>
+            <div class="position-relative mt-2">
+                <input type="text" id="searchInput" class="search-box" placeholder="Cari aplikasi premium..." onkeyup="cariProduk()">
+                <i class="fas fa-search position-absolute" style="right: 15px; top: 12px; color: #4facfe;"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <img src="banner.png" class="hero-banner mb-4" alt="Promo Banner" onerror="this.style.display='none'">
+        <div class="filter-scroll mb-3">
+            <button class="btn btn-filter active" onclick="filterProduk('Semua', this)">Semua</button>
+            <button class="btn btn-filter" onclick="filterProduk('Streaming', this)">Streaming</button>
+            <button class="btn btn-filter" onclick="filterProduk('Editing', this)">Editing</button>
+            <button class="btn btn-filter" onclick="filterProduk('AI Tools', this)">AI Tools</button>
+            <button class="btn btn-filter" onclick="filterProduk('Utility', this)">Utility</button>
+            <button class="btn btn-filter" onclick="filterProduk('Productivity', this)">Productivity</button>
+            <button class="btn btn-filter" onclick="filterProduk('Sosmed', this)">Sosmed</button>
+            <button class="btn btn-filter" onclick="filterProduk('VPN', this)">VPN</button>
+        </div>
+        <div class="row g-3" id="areaProduk"></div>
+        <div id="msgKosong" class="text-center mt-5 text-secondary" style="display:none;">
+            <i class="fas fa-search fa-3x mb-3" style="color: #2a3a5a;"></i><br>Produk tidak ditemukan.
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="new bootstrap.Modal(document.getElementById('modalCaraOrder')).show()">
+            <i class="fas fa-book-open"></i> <span>Cara Order</span>
+        </div>
+        <div class="nav-item active" onclick="location.reload()">
+            <i class="fas fa-home"></i> <span>Home</span>
+        </div>
+        <a href="testimoni.html" class="nav-item text-decoration-none">
+            <i class="fas fa-star"></i> <span>Testimoni</span>
+        </a>
+    </div>
+
+    <div class="modal fade" id="modalCaraOrder" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 pb-0"><h5 class="fw-bold" style="color: #4facfe;"><i class="fas fa-info-circle me-2"></i>Cara Order</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body pt-4"><div class="step-item"><div class="step-icon"><i class="fas fa-hand-pointer"></i></div><div class="step-text"><b>1. Pilih Produk</b><br>Cari produk digital yang kamu inginkan.</div></div><div class="step-item"><div class="step-icon"><i class="fas fa-credit-card"></i></div><div class="step-text"><b>2. Isi Data & Bayar</b><br>Isi formulir dan scan QRIS.</div></div><div class="step-item"><div class="step-icon"><i class="fab fa-whatsapp"></i></div><div class="step-text"><b>3. Konfirmasi WA</b><br>Kirim bukti bayar ke Admin.</div></div><button class="btn btn-blue-gradient w-100 py-2 mt-3" data-bs-dismiss="modal">SIAP, SAYA MENGERTI! 🚀</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalVarian" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0"><h5 class="fw-bold" id="vNamaProduk">Nama Produk</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body pt-4"><div id="listVarian"></div></div>
+                <div class="modal-footer border-0 pt-0 align-items-center"><div><small class="text-secondary d-block" style="font-size:10px;">Total Bayar</small><span id="vTotalHarga" class="fw-bold fs-5" style="color: #4facfe;">Rp 0</span></div><button id="btnLanjutBayar" class="btn btn-blue-gradient px-4 disabled" onclick="bukaQRIS()">LANJUT <i class="fas fa-arrow-right ms-1"></i></button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-0 pb-0"><h6 class="fw-bold">Pembayaran</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body text-center">
+                    <div class="timer-box"><i class="fas fa-clock me-1"></i> Selesaikan dalam <span id="countdown">10:00</span></div>
+                    <img src="qris.jpg" class="img-fluid border border-2 border-primary rounded p-1 mb-3 bg-white" style="max-height: 200px;" onerror="this.src='https://via.placeholder.com/200?text=QRIS+NOT+FOUND'">
+                    <h4 class="fw-bold mb-3" id="qTotal" style="color: #4facfe;">Rp 0</h4>
+                    <div class="text-start p-3 rounded border border-secondary mb-3" style="background: #1c263d;">
+                        <h6 class="small fw-bold text-white mb-3 border-bottom pb-2 border-secondary" style="color: #4facfe !important;">DATA PEMBELI</h6>
+                        <label class="form-label-custom">Nama Kamu</label><input type="text" id="inputNama" class="form-control form-control-dark mb-2" placeholder="Cth: Budi">
+                        <label class="form-label-custom">Nomor WhatsApp</label><input type="number" id="inputWA" class="form-control form-control-dark mb-2" placeholder="08xxxxx">
+                        <div id="divCatatan" style="display:none;"><label class="form-label-custom" style="color: #4facfe;">Detail Order</label><textarea id="inputCatatan" class="form-control form-control-dark" rows="2" style="border-color: #4facfe !important;"></textarea></div>
+                    </div>
+                    <button onclick="tandaiLunas()" class="btn btn-blue-gradient w-100 py-2 shadow">SAYA SUDAH BAYAR <i class="fas fa-check-circle ms-1"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSukses" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content w-100 p-3 rounded border border-secondary" style="background: #0a0e17;">
+                <div class="text-center mb-3 pt-2"><i class="fas fa-check-circle" style="font-size: 60px; color: #4facfe;"></i><h5 class="fw-bold mt-3" style="color: #4facfe;">Pembayaran Berhasil!</h5></div>
+                <div class="p-3 rounded mb-3 border border-secondary" style="background: #131a2a;">
+                    <div class="d-flex justify-content-between mb-1 small"><span>ID:</span> <span id="sId" style="color: #4facfe;">TRX-000</span></div>
+                    <div class="d-flex justify-content-between mb-1 small"><span>Produk:</span> <span id="sProduk">-</span></div>
+                    <div class="d-flex justify-content-between mb-1 small"><span>Paket:</span> <span id="sVarian">-</span></div>
+                    <div class="d-flex justify-content-between mb-1 small"><span>Total:</span> <span id="sHarga" class="fw-bold text-white">-</span></div>
+                    <div class="d-flex justify-content-between mb-1 small mt-2 pt-2 border-top border-secondary" id="rowCatatan" style="display:none;"><span>Catatan:</span> <span id="sCatatan" style="color: #4facfe;">-</span></div>
+                </div>
+                <button onclick="kirimWA()" class="btn btn-blue-gradient w-100 py-2 mb-2"><i class="fab fa-whatsapp me-1"></i> KIRIM BUKTI KE ADMIN</button>
+                <button onclick="tutupBelanja()" class="btn btn-outline-blue w-100 btn-sm" style="border: 1px solid #4facfe; color: #4facfe;">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+    <script>
+        const NOMOR_WA = "6283843400022"; 
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyB-cU3n9GQiO5dyaXgLF3mwGFPZ6ACqQds",
+          authDomain: "appsphere-de73d.firebaseapp.com",
+          databaseURL: "https://appsphere-de73d-default-rtdb.firebaseio.com",
+          projectId: "appsphere-de73d",
+          storageBucket: "appsphere-de73d.firebasestorage.app",
+          messagingSenderId: "610562583858",
+          appId: "1:610562583858:web:7e252865c692af00783b2b",
+          measurementId: "G-84ZR60FM03"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const dbRef = firebase.database().ref('produk');
+
+        let db = [];
+        let produkAktif = null, varianPilihan = null, timerInterval;
+        let modalVarianInstance, modalBayarInstance, modalSuksesInstance;
+        let trxData = {};
+
+        // SINKRONISASI OTOMATIS
+        dbRef.on('value', (snapshot) => {
+            const dataObj = snapshot.val();
+            db = [];
+            if (dataObj) {
+                Object.keys(dataObj).forEach(key => {
+                    db.push({ id: key, ...dataObj[key] });
+                });
+            }
+            render('Semua');
+        });
+
+        window.onload = function() {
+            modalVarianInstance = new bootstrap.Modal(document.getElementById('modalVarian'));
+            modalBayarInstance = new bootstrap.Modal(document.getElementById('modalBayar'));
+            modalSuksesInstance = new bootstrap.Modal(document.getElementById('modalSukses'));
+        }
+
+        function cariProduk() {
+            let keyword = document.getElementById('searchInput').value.toLowerCase();
+            let area = document.getElementById('areaProduk');
+            area.innerHTML = '';
+            let hasil = db.filter(p => p.nama.toLowerCase().includes(keyword));
+            if(hasil.length === 0) document.getElementById('msgKosong').style.display = 'block';
+            else { document.getElementById('msgKosong').style.display = 'none'; renderGrid(hasil); }
+        }
+
+        function render(kategori) {
+            let data = (kategori === 'Semua') ? db : db.filter(p => p.kat === kategori);
+            renderGrid(data);
+        }
+
+        function renderGrid(data) {
+            let area = document.getElementById('areaProduk');
+            area.innerHTML = '';
+            if(data.length === 0) document.getElementById('msgKosong').style.display = 'block';
+            else {
+                document.getElementById('msgKosong').style.display = 'none';
+                data.forEach((p, i) => {
+                    let dbIndex = db.findIndex(x => x.id === p.id); 
+                    if (dbIndex === -1) dbIndex = i; 
+                    let hargaMulai = p.varian ? p.varian[0].harga : p.harga;
+
+                    area.innerHTML += `
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="card card-product" onclick="cekProduk(${dbIndex})">
+                                <img src="${p.img}" class="product-img" onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+                                <div class="card-body p-2">
+                                    <h6 class="card-title text-truncate">${p.nama}</h6>
+                                    <div class="card-price">Mulai Rp ${parseInt(hargaMulai).toLocaleString()}</div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+
+        function filterProduk(k, btn) {
+            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render(k);
+        }
+
+        function cekProduk(index) {
+            produkAktif = db[index];
+            document.getElementById('vNamaProduk').innerText = produkAktif.nama;
+            let listHTML = "";
+            if(produkAktif.varian) {
+                produkAktif.varian.forEach((v, idx) => {
+                    listHTML += `<div class="variant-option" onclick="pilihVarian(${idx}, this)"><span class="fw-bold">${v.nama}</span><span class="fw-bold" style="color:#4facfe;">Rp ${parseInt(v.harga).toLocaleString()}</span></div>`;
+                });
+            }
+            document.getElementById('listVarian').innerHTML = listHTML;
+            document.getElementById('vTotalHarga').innerText = "Rp 0";
+            document.getElementById('btnLanjutBayar').classList.add('disabled');
+            modalVarianInstance.show();
+        }
+
+        function pilihVarian(idx, element) {
+            document.querySelectorAll('.variant-option').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.desc-box-dynamic').forEach(el => el.remove());
+            element.classList.add('selected');
+            varianPilihan = produkAktif.varian[idx];
+            if(varianPilihan.desk && varianPilihan.desk !== "-") { element.insertAdjacentHTML('afterend', `<div class="desc-box-dynamic">${varianPilihan.desk}</div>`); }
+            document.getElementById('vTotalHarga').innerText = "Rp " + parseInt(varianPilihan.harga).toLocaleString();
+            document.getElementById('btnLanjutBayar').classList.remove('disabled');
+        }
+
+        function bukaQRIS() {
+            modalVarianInstance.hide();
+            document.getElementById('qTotal').innerText = "Total: Rp " + parseInt(varianPilihan.harga).toLocaleString();
+            document.getElementById('inputNama').value = "";
+            document.getElementById('inputWA').value = "";
+            let inputCatatan = document.getElementById('inputCatatan');
+            inputCatatan.value = "";
+            document.getElementById('divCatatan').style.display = produkAktif.formType === 'lengkap' ? 'block' : 'none';
+            startTimer();
+            modalBayarInstance.show();
+        }
+
+        function startTimer() {
+            let durasi = 600; 
+            let display = document.getElementById('countdown');
+            clearInterval(timerInterval);
+            timerInterval = setInterval(function () {
+                let m = Math.floor(durasi / 60);
+                let s = durasi % 60;
+                m = m < 10 ? "0" + m : m;
+                s = s < 10 ? "0" + s : s;
+                display.textContent = m + ":" + s;
+                if (--durasi < 0) {
+                    clearInterval(timerInterval);
+                    alert("Waktu Habis!");
+                    modalBayarInstance.hide();
+                }
+            }, 1000);
+        }
+
+        function tandaiLunas() {
+            let nama = document.getElementById('inputNama').value;
+            let wa = document.getElementById('inputWA').value;
+            if(!nama || !wa) return alert("Nama dan WA wajib diisi!");
+            trxData = {
+                id: 'TRX-' + Math.floor(Math.random() * 10000),
+                produk: produkAktif.nama,
+                varian: varianPilihan.nama,
+                harga: "Rp " + parseInt(varianPilihan.harga).toLocaleString(),
+                nama: nama,
+                wa: wa,
+                catatan: document.getElementById('inputCatatan').value || "-"
+            };
+            document.getElementById('sId').innerText = trxData.id;
+            document.getElementById('sProduk').innerText = trxData.produk;
+            document.getElementById('sVarian').innerText = trxData.varian;
+            document.getElementById('sHarga').innerText = trxData.harga;
+            if(trxData.catatan !== "-") {
+                document.getElementById('rowCatatan').style.display = 'flex';
+                document.getElementById('sCatatan').innerText = trxData.catatan;
+            } else {
+                document.getElementById('rowCatatan').style.display = 'none';
+            }
+            modalBayarInstance.hide();
+            modalSuksesInstance.show();
+        }
+
+        function kirimWA() {
+            let teks = `Halo Admin, saya sudah bayar via QRIS.%0A%0A` +
+                       `*ID:* ${trxData.id}%0A` +
+                       `*Nama:* ${trxData.nama}%0A` +
+                       `*Produk:* ${trxData.produk}%0A` +
+                       `*Paket:* ${trxData.varian}%0A` +
+                       `*Total:* ${trxData.harga}%0A` +
+                       `*Catatan:* ${trxData.catatan}%0A%0A` +
+                       `Mohon diproses ya!`;
+            window.open(`https://wa.me/${NOMOR_WA}?text=${teks}`, '_blank');
+        }
+
+        function tutupBelanja() {
+            modalSuksesInstance.hide();
+            location.reload();
+        }
+    </script>
+</body>
+</html>
