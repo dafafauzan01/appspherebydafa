@@ -30,10 +30,11 @@
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script>
-        // CONFIG FIREBASE KAMU
+        // === CONFIG SUDAH DIPERBAIKI (ADA DATABASE URL) ===
         const firebaseConfig = {
           apiKey: "AIzaSyB-cU3n9GQiO5dyaXgLF3mwGFPZ6ACqQds",
           authDomain: "appsphere-de73d.firebaseapp.com",
+          databaseURL: "https://appsphere-de73d-default-rtdb.firebaseio.com", // INI WAJIB ADA!
           projectId: "appsphere-de73d",
           storageBucket: "appsphere-de73d.firebasestorage.app",
           messagingSenderId: "610562583858",
@@ -64,7 +65,8 @@
                             <div class="card-header"><i class="fas fa-plus-circle me-2"></i> Input Produk</div>
                             <div class="card-body">
                                 <form id="formProduk">
-                                    <input type="hidden" id="indexEdit"> <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('fileInput').click()">
+                                    <input type="hidden" id="indexEdit">
+                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('fileInput').click()">
                                         <img id="previewImg" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mb-2 rounded">
                                         <i id="iconUpload" class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
                                         <div class="small text-muted mt-2">Klik untuk Upload Foto</div>
@@ -76,6 +78,209 @@
                                     <div class="mb-2">
                                         <select id="kategori" class="form-select">
                                             <option value="Streaming">Streaming</option>
+                                            <option value="Editing">Editing</option>
+                                            <option value="AI Tools">AI Tools</option>
+                                            <option value="Utility">Utility</option>
+                                            <option value="Productivity">Productivity</option>
+                                            <option value="Sosmed">Sosmed</option>
+                                            <option value="VPN">VPN</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-2"><textarea id="varian" class="form-control" rows="4" placeholder="Format: Nama, Harga, Deskripsi&#10;Contoh: Sharing, 25000, Garansi 1 Bulan" style="font-family: monospace; font-size: 11px;"></textarea></div>
+                                    <div class="mb-3 p-2 rounded border border-primary" style="background: #1c263d;"><select id="jenisForm" class="form-select form-select-sm border-0 bg-transparent text-white"><option value="standar">Form Standar (Nama & WA)</option><option value="lengkap">Form Lengkap (+Catatan Email/ID)</option></select></div>
+                                    <button type="submit" id="btnSimpan" class="btn btn-primary w-100 fw-bold py-2">SIMPAN PRODUK</button>
+                                    <button type="button" id="btnBatal" onclick="resetForm()" class="btn btn-secondary w-100 mt-2" style="display:none;">BATAL</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button onclick="hapusSemua()" class="btn btn-outline-danger btn-sm mb-3"><i class="fas fa-trash-alt me-1"></i> Reset Database Toko</button>
+                            <br>
+                            <a href="index.html" class="btn btn-outline-primary btn-sm rounded-pill px-4">Lihat Toko <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-dark text-white border-bottom border-secondary">Daftar Produk (Live Firebase)</div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover align-middle mb-0 text-white">
+                                    <thead class="table-light"><tr><th class="ps-3">Produk</th><th class="text-end pe-3">Aksi</th></tr></thead>
+                                    <tbody id="tabelData"></tbody>
+                                </table>
+                                <div id="kosongMsg" class="text-center p-5 small text-muted">Memuat data dari Firebase...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab-testi">
+                <div class="row">
+                    <div class="col-md-5 mb-4">
+                        <div class="card shadow-sm">
+                            <div class="card-header text-primary"><i class="fas fa-camera me-2"></i> Upload Screenshot</div>
+                            <div class="card-body">
+                                <form id="formTesti">
+                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('fileSS').click()">
+                                        <img id="previewSS" src="" style="max-height: 150px; display: none;" class="mx-auto d-block mb-2 shadow-sm rounded">
+                                        <i id="iconUploadSS" class="fas fa-image fa-3x text-primary"></i>
+                                        <div class="small text-muted mt-2">Upload Bukti Transaksi</div>
+                                    </div>
+                                    <input type="file" id="fileSS" class="d-none" accept="image/*"><input type="hidden" id="base64SS">
+                                    <div class="mb-3"><input type="text" id="tCaption" class="form-control" placeholder="Judul (Cth: Done Netflix Kak Budi)" required></div>
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">UPLOAD SCREENSHOT</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-dark text-white border-bottom border-secondary">Galeri Bukti</div>
+                            <div class="card-body p-0">
+                                <div class="row g-2 p-2" id="listTesti"></div>
+                                <div id="kosongTesti" class="text-center p-5 small text-muted">Belum ada screenshot.</div>
+                            </div>
+                            <div class="card-footer bg-dark border-0 text-center">
+                                <button onclick="hapusSemuaTesti()" class="btn btn-outline-danger btn-sm" style="font-size:10px;"><i class="fas fa-trash me-1"></i> Hapus Semua SS</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let db = []; 
+        dbRef.on('value', (snapshot) => {
+            const dataObj = snapshot.val();
+            db = [];
+            if (dataObj) {
+                Object.keys(dataObj).forEach(key => {
+                    db.push({ id: key, ...dataObj[key] });
+                });
+                document.getElementById('kosongMsg').style.display = 'none';
+            } else {
+                document.getElementById('kosongMsg').style.display = 'block';
+                document.getElementById('kosongMsg').innerText = "Data Kosong.";
+            }
+            renderTabel();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(){const r=new FileReader();r.onload=function(e){document.getElementById('previewImg').src=e.target.result;document.getElementById('previewImg').style.display='block';document.getElementById('iconUpload').style.display='none';document.getElementById('base64Foto').value=e.target.result;};if(this.files[0])r.readAsDataURL(this.files[0]);});
+
+        document.getElementById('formProduk').addEventListener('submit', function(e){
+            e.preventDefault();
+            let idEdit = document.getElementById('indexEdit').value;
+            let n = document.getElementById('nama').value;
+            let k = document.getElementById('kategori').value;
+            let f = document.getElementById('jenisForm').value;
+            let im = document.getElementById('base64Foto').value;
+            let rv = document.getElementById('varian').value;
+
+            let lv = [], ln = rv.split('\n'), ht = 999999999;
+            ln.forEach(l => {
+                let p = l.split(',');
+                if(p.length >= 2){
+                    let vn = p[0].trim(), vh = parseInt(p[1].trim().replace(/[^0-9]/g,'')), vd = p[2] ? p[2].trim() : "-";
+                    if(vn && vh){
+                        lv.push({nama:vn, harga:vh, desk:vd});
+                        if(vh < ht) ht = vh;
+                    }
+                }
+            });
+
+            if(lv.length === 0) return alert("Varian kosong!");
+            if(!idEdit && !im) return alert("Foto wajib diupload!");
+            
+            if(idEdit && !im) {
+                let produkLama = db.find(p => p.id === idEdit);
+                if(produkLama) im = produkLama.img;
+            }
+
+            let d = {nama:n, harga:ht, kat:k, formType:f, img:im, varian:lv};
+            document.getElementById('btnSimpan').innerText = "Menyimpan...";
+            document.getElementById('btnSimpan').disabled = true;
+
+            if(idEdit){
+                firebase.database().ref('produk/' + idEdit).update(d)
+                .then(() => { alert("Sukses Update Data!"); resetForm(); })
+                .catch((err) => alert("Gagal Update: " + err.message));
+            } else {
+                dbRef.push(d)
+                .then(() => { alert("Produk Berhasil Ditambah!"); resetForm(); })
+                .catch((err) => alert("Gagal Simpan: " + err.message));
+            }
+        });
+
+        function hapus(idFirebase){
+            if(confirm("Hapus produk ini?")){
+                firebase.database().ref('produk/' + idFirebase).remove()
+                .catch((err) => alert("Gagal hapus: " + err.message));
+            }
+        }
+
+        function hapusSemua(){
+            if(confirm("Yakin HAPUS SEMUA?")){
+                dbRef.remove().catch((err) => alert("Gagal reset: " + err.message));
+            }
+        }
+
+        function edit(idFirebase){
+            let p = db.find(item => item.id === idFirebase);
+            if(!p) return;
+            document.getElementById('indexEdit').value = idFirebase;
+            document.getElementById('nama').value = p.nama;
+            document.getElementById('kategori').value = p.kat;
+            document.getElementById('jenisForm').value = p.formType || "standar";
+            let t = "";
+            if(p.varian) { p.varian.forEach(v => { t += `${v.nama}, ${v.harga}, ${v.desk}\n`; }); }
+            document.getElementById('varian').value = t;
+            document.getElementById('previewImg').src = p.img;
+            document.getElementById('previewImg').style.display = 'block';
+            document.getElementById('iconUpload').style.display = 'none';
+            document.getElementById('base64Foto').value = "";
+            document.getElementById('btnSimpan').innerText = "UPDATE PRODUK";
+            document.getElementById('btnSimpan').className = "btn btn-warning w-100 fw-bold";
+            document.getElementById('btnBatal').style.display = 'block';
+            document.getElementById('formProduk').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function renderTabel(){
+            let t = document.getElementById('tabelData');
+            t.innerHTML = "";
+            if(db.length === 0){
+                document.getElementById('kosongMsg').style.display = 'block';
+            } else {
+                document.getElementById('kosongMsg').style.display = 'none';
+                db.forEach((p) => {
+                    t.innerHTML += `<tr><td class="ps-3"><div class="d-flex align-items-center"><img src="${p.img}" width="40" height="40" class="rounded me-2" style="object-fit:cover; border:1px solid #2a3a5a;"><div><div class="fw-bold small text-white">${p.nama}</div><span class="badge bg-primary" style="font-size:10px;">${p.kat}</span></div></div></td><td class="text-end pe-3"><button onclick="edit('${p.id}')" class="btn btn-sm btn-dark border-secondary me-1"><i class="fas fa-pen text-warning"></i></button><button onclick="hapus('${p.id}')" class="btn btn-sm btn-dark border-secondary"><i class="fas fa-trash text-danger"></i></button></td></tr>`;
+                });
+            }
+        }
+
+        function resetForm(){
+            document.getElementById('formProduk').reset();
+            document.getElementById('indexEdit').value = "";
+            document.getElementById('previewImg').style.display = 'none';
+            document.getElementById('iconUpload').style.display = 'block';
+            document.getElementById('btnSimpan').innerText = "SIMPAN PRODUK";
+            document.getElementById('btnSimpan').disabled = false;
+            document.getElementById('btnSimpan').className = "btn btn-primary w-100 fw-bold";
+            document.getElementById('btnBatal').style.display = 'none';
+        }
+
+        let dbSS = JSON.parse(localStorage.getItem('toko_ss')) || []; 
+        renderSS();
+        document.getElementById('fileSS').addEventListener('change', function(){const r = new FileReader();r.onload = function(e){document.getElementById('previewSS').src = e.target.result;document.getElementById('previewSS').style.display = 'block';document.getElementById('iconUploadSS').style.display = 'none';document.getElementById('base64SS').value = e.target.result;};if(this.files[0]) r.readAsDataURL(this.files[0]);});
+        document.getElementById('formTesti').addEventListener('submit', function(e){e.preventDefault();let img = document.getElementById('base64SS').value;let caption = document.getElementById('tCaption').value;if(!img) return alert("Pilih gambar!");dbSS.unshift({ img, caption });localStorage.setItem('toko_ss', JSON.stringify(dbSS));alert("Uploaded!");document.getElementById('formTesti').reset();document.getElementById('previewSS').style.display = 'none';document.getElementById('iconUploadSS').style.display = 'block';document.getElementById('base64SS').value = "";renderSS();});
+        function hapusSS(i){if(confirm("Hapus screenshot ini?")){dbSS.splice(i, 1);localStorage.setItem('toko_ss', JSON.stringify(dbSS));renderSS();}}
+        function hapusSemuaTesti(){if(confirm("Hapus SEMUA screenshot?")){localStorage.removeItem('toko_ss');dbSS = [];renderSS();}}
+        function renderSS(){let a = document.getElementById('listTesti');a.innerHTML = "";if(dbSS.length === 0){document.getElementById('kosongTesti').style.display = 'block';}else{document.getElementById('kosongTesti').style.display = 'none';dbSS.forEach((ss, i) => {a.innerHTML += `<div class="col-6 col-md-4"><div class="card border-0 shadow-sm h-100"><img src="${ss.img}" class="card-img-top" style="height: 150px; object-fit: cover; border-bottom: 1px solid #1c263d;"><div class="card-body p-2 d-flex justify-content-between align-items-center" style="background:#1c263d;"><small class="text-truncate text-white" style="font-size:11px;">${ss.caption}</small><button onclick="hapusSS(${i})" class="btn btn-sm text-danger"><i class="fas fa-trash"></i></button></div></div></div>`;});}}
+        function logout() { sessionStorage.removeItem('statusLogin'); window.location.href = "login.html"; }
+    </script>
+</body>
+                                                                                                                                                                          </html>
                                             <option value="Editing">Editing</option>
                                             <option value="AI Tools">AI Tools</option>
                                             <option value="Utility">Utility</option>
