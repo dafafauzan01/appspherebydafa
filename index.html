@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AppSphere</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* === KUNCI TAMPILAN (HP VIEW DI SEMUA LAYAR) === */
+        body { 
+            background-color: #000; 
+            margin: 0; padding: 0;
+            display: flex; justify-content: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            /* PENTING: TAMBAH PADDING DI BODY UNTUK RUANG NAVIGASI BAWAH */
+            padding-bottom: 60px; 
+        }
+        #mobile-frame {
+            width: 100%; max-width: 480px; 
+            background-color: #0a0e17; 
+            min-height: 100vh; 
+            position: relative;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.1);
+            padding-bottom: 0; /* padding di body yang urus */
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        .app-header { 
+            background: rgba(10, 14, 23, 0.98); padding: 15px 20px; 
+            position: sticky; top: 0; z-index: 999; 
+            border-bottom: 1px solid #1c263d;
+        }
+        .logo-text { 
+            font-size: 22px; font-weight: 800; 
+            background: linear-gradient(45deg, #4facfe, #a6c1ee); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            text-decoration: none; 
+        }
+        .search-box { 
+            background: #131a2a; border: 1px solid #2a3a5a; 
+            border-radius: 10px; color: #fff; 
+            padding: 10px 15px; width: 100%; outline: none; margin-top: 10px;
+        }
+        .search-box:focus { border-color: #4facfe; }
+
+        /* KONTEN & PRODUK GRID */
+        .hero-container { padding: 20px; }
+        .hero-banner { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid #1c263d; }
+        .produk-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px; padding-bottom: 20px; }
+        .card-product { background: #131a2a; border: 1px solid #1c263d; border-radius: 10px; overflow: hidden; cursor: pointer; }
+        .product-img { width: 100%; height: 140px; object-fit: cover; border-bottom: 1px solid #1c263d; }
+        .card-body { padding: 10px; }
+        .card-title { font-size: 13px; color: #fff; margin-bottom: 5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-price { font-size: 12px; color: #4facfe; font-weight: bold; }
+
+        /* CAROUSEL */
+        .hot-container { padding: 0 20px 20px 20px; display: none; }
+        #hot-carousel { overflow: hidden; }
+        #hot-list { display: flex; transition: transform 0.6s ease-in-out; } 
+        .carousel-item-custom { display: flex; gap: 10px; width: 100%; flex-shrink: 0; transform: translateX(0); }
+        .card-hot { min-width: calc(33.33% - 7px); width: calc(33.33% - 7px); background: linear-gradient(135deg, #131a2a, #1c263d); border: 1px solid #ff9f43; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; }
+        .badge-hot { position: absolute; top: 5px; left: 5px; background: #ff9f43; color: #000; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: bold; z-index: 2; }
+        .filter-scroll { overflow-x: auto; white-space: nowrap; padding: 0 20px 15px 20px; scrollbar-width: none; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .btn-filter { display: inline-block; padding: 6px 15px; margin-right: 8px; background: #131a2a; border: 1px solid #2a3a5a; border-radius: 20px; color: #a0aec0; font-size: 12px; cursor: pointer; }
+        .btn-filter.active { background: #4facfe; color: #000; font-weight: bold; border-color: #4facfe; }
+
+        /* === NAVIGASI BAWAH: FIX DI DASAR LAYAR === */
+        .bottom-nav { 
+            position: fixed; /* Ini kuncinya: selalu terlihat di layar */
+            bottom: 0; 
+            left: 50%; /* Posisikan di tengah */
+            transform: translateX(-50%); /* Geser ke kiri 50% lebarnya */
+            width: 100%; 
+            max-width: 480px; /* Kunci lebar agar sesuai frame HP */
+            height: 60px;
+            background: #0a0e17; 
+            border-top: 1px solid #1c263d; 
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            z-index: 2000; 
+        }
+        .nav-item { text-align: center; color: #64748b; font-size: 10px; cursor: pointer; text-decoration: none; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 2px; }
+        .nav-item.active { color: #4facfe; }
+        /* UTILS & MODAL LAINNYA TIDAK BERUBAH */
+        .modal-content { background: #131a2a; color: #fff; border: 1px solid #2a3a5a; }
+        .form-control-dark { background: #1c263d; border: 1px solid #2a3a5a; color: #fff; }
+        .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 10px; border-radius: 8px; }
+        .variant-item { padding: 12px; border: 1px solid #2a3a5a; margin-bottom: 8px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #131a2a; }
+        .variant-item.selected { border-color: #4facfe; background: rgba(79,172,254,0.1); }
+        .variant-item.disabled { opacity: 0.5; cursor: not-allowed; border-color: #444; }
+        .variant-name { flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: bold; margin-right: 10px; }
+        .variant-price { flex-shrink: 0; white-space: nowrap; font-weight: bold; color: #4facfe; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div id="mobile-frame">
+        <div class="app-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.html" class="logo-text"><i class="fas fa-cube me-2"></i>AppSphere</a>
+                <a href="login.html" class="text-secondary"><i class="fas fa-user-circle fa-lg"></i></a>
+            </div>
+            <input type="text" id="searchInput" class="search-box" placeholder="Cari produk..." onkeyup="cariProduk()">
+        </div>
+
+        <div class="hero-container"><img src="banner.png" class="hero-banner" alt="Banner Promo" onerror="this.style.display='none'"></div>
+
+        <div class="filter-scroll">
+            <div class="btn-filter active" onclick="filterProduk('Semua', this)">Semua</div>
+            <div class="btn-filter" onclick="filterProduk('Streaming', this)">Streaming</div>
+            <div class="btn-filter" onclick="filterProduk('Editing', this)">Editing</div>
+            <div class="btn-filter" onclick="filterProduk('AI Tools', this)">AI Tools</div>
+            <div class="btn-filter" onclick="filterProduk('Utility', this)">Utility</div>
+            <div class="btn-filter" onclick="filterProduk('Sosmed', this)">Sosmed</div>
+            <div class="btn-filter" onclick="filterProduk('VPN', this)">VPN</div>
+        </div>
+
+        <div id="hot-area" class="hot-container">
+            <h6 class="text-white fw-bold mb-2"><i class="fas fa-fire text-warning me-1"></i> Lagi Panas! 🔥</h6>
+            <div id="hot-carousel" class="hot-area-wrapper">
+                <div id="hot-list"></div>
+            </div>
+        </div>
+
+        <div class="produk-container" id="areaProduk"></div>
+        <div id="msgKosong" class="text-center mt-5 text-secondary" style="display:none;"><i class="fas fa-box-open fa-3x mb-3"></i><p>Produk tidak ditemukan.</p></div>
+
+    </div> 
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="new bootstrap.Modal(document.getElementById('modalCaraOrder')).show()"><i class="fas fa-book"></i><span>Cara Order</span></div>
+        <div class="nav-item active" onclick="location.reload()"><i class="fas fa-home"></i><span>Home</span></div>
+        <a href="testimoni.html" class="nav-item"><i class="fas fa-star"></i><span>Testimoni</span></a>
+    </div>
+
+    <div class="modal fade" id="modalCaraOrder" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Cara Order</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body small pt-0"><ol class="ps-3 mb-0"><li>Pilih produk & varian.</li><li>Isi data & scan QRIS.</li><li>Kirim bukti ke WA Admin.</li></ol></div></div></div></div>
+
+    <div class="modal fade" id="modalVarian" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 pb-0"><h5 class="fw-bold mb-0" id="vNamaProduk">Produk</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="listVarian"></div></div><div class="modal-footer d-block border-0 pt-0"><div class="d-flex justify-content-between mb-2"><small>Total:</small><span id="vTotalHarga" class="fw-bold text-primary">Rp 0</span></div><button id="btnLanjutBayar" class="btn btn-primary-custom disabled" onclick="bukaQRIS()">LANJUT BAYAR</button></div></div></div></div>
+
+    <div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Pembayaran</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center pt-0"><div class="alert alert-primary py-1 px-2 d-inline-block small mb-3"><i class="fas fa-clock"></i> <span id="countdown">10:00</span></div><div class="bg-white p-2 rounded mb-3 mx-auto" style="width: 180px;"><img src="qris.jpg" class="img-fluid" onerror="this.src='https://via.placeholder.com/200?text=QRIS'"></div><h4 class="fw-bold text-primary mb-3" id="qTotal">Rp 0</h4><div class="text-start bg-dark p-3 rounded border border-secondary"><input type="text" id="inputNama" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Nama Kamu"><input type="number" id="inputWA" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Nomor WA"><textarea id="inputCatatan" class="form-control form-control-dark form-control-sm" rows="2" placeholder="Catatan (Email/Akun)" style="display:none;"></textarea></div><button onclick="tandaiLunas()" class="btn btn-primary-custom mt-3">KONFIRMASI BAYAR</button></div></div></div></div>
+
+    <div class="modal fade" id="modalSukses" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-check-circle text-success mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pesanan Dibuat!</h5><p class="small text-muted mb-3">Stok berhasil diamankan.</p><div class="bg-dark p-2 rounded text-start small mb-3 border border-secondary"><div>ID: <span id="sId" class="text-info"></span></div><div>Item: <span id="sProduk"></span></div><div>Varian: <span id="sVarian" class="text-warning"></span></div></div><button onclick="kirimWA()" class="btn btn-success w-100 fw-bold mb-2"><i class="fab fa-whatsapp me-2"></i>KIRIM BUKTI</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script>
+        const NOMOR_WA = "6283843400022";
+        const firebaseConfig = {
+          apiKey: "AIzaSyB-cU3n9GQiO5dyaXgLF3mwGFPZ6ACqQds",
+          authDomain: "appsphere-de73d.firebaseapp.com",
+          databaseURL: "https://appsphere-de73d-default-rtdb.firebaseio.com",
+          projectId: "appsphere-de73d",
+          storageBucket: "appsphere-de73d.firebasestorage.app",
+          messagingSenderId: "610562583858",
+          appId: "1:610562583858:web:7e252865c692af00783b2b",
+          measurementId: "G-84ZR60FM03"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const dbRef = firebase.database().ref('produk');
+
+        let db = [], produkAktif, varianPilihan, timerInterval, trxData = {};
+        let modalVarianInstance, modalBayarInstance, modalSuksesInstance;
+        let slideInterval; 
+
+        dbRef.on('value', (s) => {
+            const d = s.val(); db = [];
+            if(d) Object.keys(d).forEach(k => db.push({id:k, ...d[k]}));
+            render('Semua');
+            renderHot(); 
+        });
+
+        window.onload = () => {
+            modalVarianInstance = new bootstrap.Modal(document.getElementById('modalVarian'));
+            modalBayarInstance = new bootstrap.Modal(document.getElementById('modalBayar'));
+            modalSuksesInstance = new bootstrap.Modal(document.getElementById('modalSukses'));
+        };
+
+        // === LOGIKA RENDER CAROUSEL HOT PRODUK: CHUNK SIZE 3 ===
+        function renderHot() {
+            let hot = db.filter(p => p.isHot === true);
+            let area = document.getElementById('hot-area');
+            let list = document.getElementById('hot-list');
+            list.innerHTML = "";
+            
+            clearInterval(slideInterval);
+
+            if(hot.length > 0) {
+                area.style.display = 'block';
+                let chunkSize = 3; 
+                let totalSlides = Math.ceil(hot.length / chunkSize);
+                let currentSlide = 0;
+                
+                for (let i = 0; i < totalSlides; i++) {
+                    const startIndex = i * chunkSize;
+                    const chunk = hot.slice(startIndex, startIndex + chunkSize);
+                    let itemsHtml = '';
+                    
+                    chunk.forEach(p => {
+                        let idx = db.findIndex(x => x.id === p.id);
+                        let pr = p.varian ? p.varian[0].harga : p.harga;
+                        itemsHtml += `
+                        <div class="card-hot" onclick="cekProduk(${idx})" style="flex-shrink: 0;">
+                            <div class="badge-hot">HOT</div>
+                            <img src="${p.img}" class="w-100" style="height:100px; object-fit:cover;">
+                            <div class="p-2">
+                                <div class="text-white small text-truncate fw-bold">${p.nama}</div>
+                                <div class="text-warning small fw-bold" style="font-size:10px;">Rp ${parseInt(pr).toLocaleString()}</div>
+                            </div>
+                        </div>`;
+                    });
+
+                    list.innerHTML += `<div class="carousel-item-custom" style="width: 100%; display: flex; gap: 10px;">${itemsHtml}</div>`;
+                }
+                
+                const frame = document.getElementById('hot-list');
+                
+                function slide() {
+                    currentSlide = (currentSlide + 1) % totalSlides;
+                    const offset = currentSlide * 100;
+                    frame.style.transform = `translateX(-${offset}%)`;
+                }
+                
+                slideInterval = setInterval(slide, 3000); 
+                
+            } else { area.style.display = 'none'; }
+        }
+        // =======================================================
+
+
+        function cariProduk() { renderGrid(db.filter(p => p.nama.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); }
+        function filterProduk(c, el) { document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active')); el.classList.add('active'); render(c); }
+        function render(c) { renderGrid(c === 'Semua' ? db : db.filter(p => p.kat === c)); }
+        function renderGrid(d) {
+            let h = document.getElementById('areaProduk'); h.innerHTML = '';
+            if(d.length === 0) return document.getElementById('msgKosong').style.display = 'block';
+            document.getElementById('msgKosong').style.display = 'none';
+            d.forEach((p, i) => {
+                let idx = db.findIndex(x => x.id === p.id); if(idx === -1) idx = i;
+                let pr = p.varian ? p.varian[0].harga : p.harga;
+                h.innerHTML += `<div class="card-product" onclick="cekProduk(${idx})"><img src="${p.img}" class="product-img" onerror="this.src='https://via.placeholder.com/150'"><div class="card-body"><div class="card-title text-truncate">${p.nama}</div><div class="card-price">Mulai Rp ${parseInt(pr).toLocaleString()}</div></div></div>`;
+            });
+        }
+
+        function cekProduk(i) {
+            produkAktif = db[i];
+            document.getElementById('vNamaProduk').innerText = produkAktif.nama;
+            let h = "";
+            if(produkAktif.varian) produkAktif.varian.forEach((v, x) => {
+                let stok = v.stok !== undefined ? v.stok : 99;
+                let habis = stok <= 0;
+                let badge = habis ? '<span class="badge bg-danger ms-1" style="font-size:9px;">Habis</span>' : `<span class="badge bg-secondary ms-1" style="font-size:9px;">Sisa:${stok}</span>`;
+                h += `<div class="variant-item ${habis ? 'disabled' : ''}" onclick="${habis ? '' : `pilihVarian(${x}, this)`}"><div class="variant-name">${v.nama} ${badge}</div><div class="variant-price">Rp ${parseInt(v.harga).toLocaleString()}</div></div>`;
+            });
+            document.getElementById('listVarian').innerHTML = h;
+            document.getElementById('vTotalHarga').innerText = "Rp 0";
+            document.getElementById('btnLanjutBayar').classList.add('disabled');
+            modalVarianInstance.show();
+        }
+
+        function pilihVarian(x, el) {
+            document.querySelectorAll('.variant-item').forEach(e => e.classList.remove('selected'));
+            document.querySelectorAll('.desc-box-dynamic').forEach(e => e.remove());
+            el.classList.add('selected');
+            varianPilihan = { ...produkAktif.varian[x], index: x };
+            document.getElementById('vTotalHarga').innerText = "Rp " + parseInt(varianPilihan.harga).toLocaleString();
+            document.getElementById('btnLanjutBayar').classList.remove('disabled');
+            if(varianPilihan.desk && varianPilihan.desk !== "-" && varianPilihan.desk !== "undefined") { 
+                el.insertAdjacentHTML('afterend', `<div class="desc-box-dynamic text-light small mt-2 mb-2 p-2 rounded bg-dark border border-secondary">${varianPilihan.desk}</div>`); 
+            }
+        }
+
+        function bukaQRIS() {
+            modalVarianInstance.hide();
+            document.getElementById('qTotal').innerText = "Rp " + parseInt(varianPilihan.harga).toLocaleString();
+            document.getElementById('inputNama').value = ""; document.getElementById('inputWA').value = "";
+            let cat = document.getElementById('inputCatatan'); cat.value = ""; cat.style.display = (produkAktif.formType === 'lengkap') ? 'block' : 'none';
+            let d = 600; clearInterval(timerInterval);
+            timerInterval = setInterval(() => { let m = Math.floor(d/60), s = d%60; document.getElementById('countdown').innerText = `${m}:${s<10?'0':''}${s}`; if(--d < 0) { clearInterval(timerInterval); modalBayarInstance.hide(); alert('Waktu Habis'); } }, 1000);
+            modalBayarInstance.show();
+        }
+
+        function tandaiLunas() {
+            let n = document.getElementById('inputNama').value, w = document.getElementById('inputWA').value;
+            if(!n || !w) return alert("Nama & WA Wajib!");
+            let stokPath = `produk/${produkAktif.id}/varian/${varianPilihan.index}/stok`;
+            firebase.database().ref(stokPath).transaction((c) => (c || 0) - 1);
+            trxData = { id: 'TRX-'+Math.floor(Math.random()*10000), produk: produkAktif.nama, varian: varianPilihan.nama, harga: "Rp "+parseInt(varianPilihan.harga).toLocaleString(), nama: n, wa: w, cat: document.getElementById('inputCatatan').value || "-" };
+            document.getElementById('sId').innerText = trxData.id;
+            document.getElementById('sProduk').innerText = trxData.produk;
+            document.getElementById('sVarian').innerText = trxData.varian;
+            modalBayarInstance.hide(); modalSuksesInstance.show();
+        }
+
+        function kirimWA() {
+            let t = `Halo Admin, saya order via Web.%0A%0A*ID:* ${trxData.id}%0A*Nama:* ${trxData.nama}%0A*Item:* ${trxData.produk}%0A*Varian:* ${trxData.varian}%0A*Total:* ${trxData.harga}%0A*Catatan:* ${trxData.cat}%0A%0AMohon diproses!`;
+            window.open(`https://wa.me/${NOMOR_WA}?text=${t}`, '_blank');
+        }
+    </script>
+</body>
+</html>
