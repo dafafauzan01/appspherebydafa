@@ -10,29 +10,56 @@
     <style>
         /* === STYLE GLOBAL === */
         body { background-color: #0f1219; margin: 0; padding: 0; min-height: 100vh; font-family: 'Segoe UI', sans-serif; padding-bottom: 70px; }
-        .main-container { max-width: 1100px; margin: 0 auto; background-color: #0f1219; min-height: 100vh; }
+        
+        /* CONTAINER UTAMA (Agar tidak terlalu lebar di PC) */
+        .main-container {
+            max-width: 1100px; 
+            margin: 0 auto;
+            background-color: #0f1219;
+            min-height: 100vh;
+        }
 
         /* HEADER */
         .app-header { background: #181b24; padding: 15px 20px; position: sticky; top: 0; z-index: 999; border-bottom: 1px solid #232733; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .logo-text { font-size: 24px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; }
+        .logo-text i { color: #4facfe; }
         .search-box { background: #232733; border: 1px solid #2d3240; border-radius: 50px; color: #fff; padding: 10px 20px; width: 100%; outline: none; margin-top: 15px; font-size: 14px; }
         .search-box:focus { border-color: #4facfe; background: #2a2f3d; }
 
-        /* BANNER FIX (Supaya tidak raksasa di Laptop) */
-        .hero-container { padding: 20px; display: flex; justify-content: center; }
+        /* BANNER FIX (AGAR LOGO TIDAK KETUTUP) */
+        .hero-container { padding: 20px; text-align: center; }
         .hero-banner { 
-            width: 100%; max-width: 100%; height: auto; 
-            max-height: 320px; /* BATAS TINGGI DI PC */
-            border-radius: 16px; object-fit: cover; 
+            width: auto;           /* Lebar menyesuaikan gambar */
+            max-width: 100%;       /* Mentok di lebar layar HP */
+            height: auto;          /* Tinggi proporsional */
+            max-height: 380px;     /* Batas tinggi di Laptop biar gak raksasa */
+            object-fit: contain;   /* WAJIB: Agar gambar UTUH tidak terpotong */
+            border-radius: 16px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
         }
 
         /* CARD DESIGN (GRID KOTAK) */
         .section-title { font-size: 18px; font-weight: 700; color: #fff; margin: 25px 0 15px 10px; border-left: 4px solid #4facfe; padding-left: 10px; }
-        .game-card { background: #1e222e; border-radius: 12px; overflow: hidden; transition: transform 0.2s; cursor: pointer; border: 1px solid #2a2f3d; height: 100%; position: relative; }
+        
+        .game-card {
+            background: #1e222e;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            cursor: pointer;
+            border: 1px solid #2a2f3d;
+            height: 100%;
+            position: relative;
+        }
         .game-card:hover { transform: translateY(-5px); border-color: #4facfe; }
         
-        .card-img-wrapper { width: 100%; aspect-ratio: 1/1; overflow: hidden; border-bottom: 1px solid #2a2f3d; position: relative; }
+        .card-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1/1; /* Kotak Persegi */
+            overflow: hidden;
+            border-bottom: 1px solid #2a2f3d;
+            position: relative;
+        }
         .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         .game-card:hover .card-img-wrapper img { transform: scale(1.1); }
         
@@ -47,8 +74,10 @@
 
         /* FILTER & NAV */
         .filter-scroll { overflow-x: auto; white-space: nowrap; padding: 0 20px 10px 20px; scrollbar-width: none; } 
+        .filter-scroll::-webkit-scrollbar { display: none; }
         .btn-filter { display: inline-block; padding: 6px 14px; margin-right: 6px; background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; color: #a0aec0; font-size: 12px; cursor: pointer; }
         .btn-filter.active { background: #4facfe; color: #000; font-weight: bold; border-color: #4facfe; }
+        
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: #181b24; border-top: 1px solid #232733; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
         .nav-item { text-align: center; color: #64748b; font-size: 10px; cursor: pointer; text-decoration: none; }
         .nav-item.active { color: #4facfe; }
@@ -57,12 +86,17 @@
         .modal-content { background: #181b24; color: #fff; border: 1px solid #2a2f3d; border-radius: 16px; }
         .variant-item { background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; padding: 10px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; }
         .variant-item.selected { border-color: #4facfe; background: rgba(79,172,254,0.1); }
+        .variant-item.disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* FORM INPUT WARNA TERANG */
         .form-control-dark { background-color: #0f172a !important; border: 1px solid #4facfe !important; color: #ffffff !important; }
-        .form-control-dark::placeholder { color: #94a3b8 !important; opacity: 0.7; }
+        .form-control-dark::placeholder { color: #94a3b8 !important; opacity: 0.8; }
+        .form-control-dark:focus { border-color: #00f2fe !important; box-shadow: 0 0 10px rgba(79, 172, 254, 0.3) !important; }
+        
         .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 10px; border-radius: 8px; }
         .data-instant-box { background: #0d1117; border: 1px dashed #00f2fe; color: #00f2fe; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all; margin-bottom: 10px; }
         
-        /* RESPONSIVE GRID (HP 3 Kolom, Laptop 6 Kolom) */
+        /* RESPONSIVE GRID (Laptop 6 Kolom, HP 3 Kolom) */
         @media (min-width: 992px) { .col-lg-2 { width: 16.666%; } }
         @media (max-width: 768px) { .col-4 { width: 33.333%; padding: 4px; } .card-body { padding: 8px 4px; } .card-title { font-size: 10px; } .btn-card { font-size: 8px; padding: 2px 6px; } }
     </style>
@@ -77,7 +111,9 @@
             <input type="text" id="searchInput" class="search-box" placeholder="Cari game atau aplikasi..." onkeyup="cariProduk()">
         </div>
 
-        <div class="hero-container"><img src="banner.png" class="hero-banner" alt="Banner Promo" onerror="this.style.display='none'"></div>
+        <div class="hero-container">
+            <img src="banner.png" class="hero-banner" alt="Banner Promo" onerror="this.style.display='none'">
+        </div>
 
         <div class="filter-scroll">
             <div class="btn-filter active" onclick="filterProduk('Semua', this)">Semua</div>
@@ -107,7 +143,7 @@
         <h4 class="fw-bold text-primary mb-3" id="qTotal">Rp 0</h4>
         <div class="text-start bg-dark p-3 rounded border border-secondary">
             <div id="infoInstant" class="badge bg-info text-dark mb-2 w-100" style="display:none;"><i class="fas fa-bolt"></i> Produk Instant Delivery</div>
-            <label class="small text-muted ms-1 mb-1">Nama Pembeli:</label><input type="text" id="inputNama" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Nama Kamu...">
+            <label class="small text-muted ms-1 mb-1">Nama Pembeli:</label><input type="text" id="inputNama" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Masukkan Nama Kamu...">
             <label class="small text-muted ms-1 mb-1">Nomor WhatsApp:</label><input type="number" id="inputWA" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Contoh: 08123456789">
             <textarea id="inputCatatan" class="form-control form-control-dark form-control-sm" rows="2" style="display:none;" placeholder="Catatan (Email/Akun)"></textarea>
         </div>
@@ -115,7 +151,9 @@
     </div></div></div></div>
 
     <div class="modal fade" id="modalSukses" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-check-circle text-success mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pesanan Dibuat!</h5><p class="small text-muted mb-3">Segera kirim bukti pembayaran.</p><div class="mb-3 text-center p-3 rounded border border-info bg-dark" onclick="triggerUpload()"><i id="iconUploadBukti" class="fas fa-cloud-upload-alt fa-lg text-info me-2"></i><span id="textUploadBukti" class="small text-info fw-bold">KLIK UNTUK UPLOAD BUKTI</span><div id="progressArea" class="progress mt-2" style="height: 5px; display: none;"><div id="progressBar" class="progress-bar bg-info" style="width: 0%"></div></div><img id="previewBukti" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mt-2 rounded"></div><input type="file" id="fileBukti" class="d-none" accept="image/*"><input type="hidden" id="linkBuktiHosting"><button id="btnKirimWA" onclick="kirimWAOtomatis()" class="btn btn-success w-100 fw-bold mb-2 disabled"><i class="fab fa-whatsapp me-2"></i>KIRIM KONFIRMASI (Tunggu Upload)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
+
     <div class="modal fade" id="modalInstant" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-bolt text-warning mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pembayaran Dikonfirmasi!</h5><div class="data-instant-box"><span id="textDataInstant">Memuat data...</span><button onclick="copyData()" class="btn btn-sm btn-outline-info position-absolute top-0 end-0 m-1" style="font-size:10px;">Salin</button></div><div class="alert alert-warning small py-1" style="font-size: 11px;">Simpan data ini. Halaman akan hilang jika ditutup.</div><button onclick="laporAdminInstant()" class="btn btn-success w-100 fw-bold mb-2"><i class="fab fa-whatsapp me-2"></i>Lapor Admin (Selesai)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
+
     <div class="modal fade" id="modalCaraOrder" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Cara Order</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body small pt-0"><ol class="ps-3 mb-0"><li>Pilih produk.</li><li>Isi data & Bayar QRIS.</li><li>Upload bukti (Manual) / Data Muncul (Instant).</li></ol></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -179,7 +217,6 @@
                 h.innerHTML += `<div class="col-12"><div class="section-title"><i class="fas ${icon} me-2 text-primary"></i> ${kat.toUpperCase()}</div></div>`;
                 
                 groupedData[kat].forEach((p) => {
-                    // FIX ERROR PRODUK TIDAK MUNCUL: Cek apakah varian ada isinya
                     let pr = (p.varian && p.varian.length > 0) ? p.varian[0].harga : (p.harga || 0);
                     let isHotBadge = p.isHot ? '<div class="badge-top-left">HOT 🔥</div>' : '';
                     let instantBadge = (p.tipeKirim === 'instant') ? '<div class="badge-top-right">AUTO ⚡</div>' : '';
