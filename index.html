@@ -8,9 +8,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* === STYLE GLOBAL === */
-        body { background-color: #0f1219; margin: 0; padding: 0; min-height: 100vh; font-family: 'Segoe UI', sans-serif; padding-bottom: 80px; }
-        .main-container { max-width: 1100px; margin: 0 auto; background-color: #0f1219; min-height: 100vh; }
+        /* === GLOBAL STYLE (MOBILE FRAME LOCK) === */
+        body { 
+            background-color: #000000; /* Latar belakang luar Hitam Pekat */
+            margin: 0; padding: 0; 
+            min-height: 100vh; 
+            font-family: 'Segoe UI', sans-serif; 
+            padding-bottom: 80px; 
+            display: flex;             /* Flexbox untuk menengahkan */
+            justify-content: center;   /* Posisi di tengah layar PC */
+        }
+        
+        .main-container { 
+            width: 100%; 
+            max-width: 480px;          /* KUNCI LEBAR SEPERTI HP */
+            background-color: #0f1219; /* Warna dasar Aplikasi */
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 30px rgba(79, 172, 254, 0.1); /* Efek glowing dikit di pinggir */
+            border-left: 1px solid #1c263d;
+            border-right: 1px solid #1c263d;
+        }
 
         /* HEADER */
         .app-header { background: #181b24; padding: 15px 20px; position: sticky; top: 0; z-index: 999; border-bottom: 1px solid #232733; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
@@ -21,21 +39,25 @@
         /* BANNER */
         .hero-container { padding: 20px; text-align: center; }
         .hero-banner { 
-            width: auto; max-width: 100%; height: auto; max-height: 380px; 
-            object-fit: contain; border-radius: 16px; 
+            width: 100%; 
+            height: auto; 
+            aspect-ratio: 2/1; /* Rasio standar banner */
+            object-fit: cover; 
+            border-radius: 16px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
         }
 
-        /* CARD DESIGN (GRID KOTAK) */
-        .section-title { font-size: 18px; font-weight: 700; color: #fff; margin: 25px 0 15px 10px; border-left: 4px solid #4facfe; padding-left: 10px; }
+        /* CARD DESIGN (GRID 3 KOLOM) */
+        .section-title { font-size: 16px; font-weight: 700; color: #fff; margin: 25px 0 10px 10px; border-left: 4px solid #4facfe; padding-left: 10px; }
         .game-card { background: #1e222e; border-radius: 12px; overflow: hidden; transition: transform 0.2s; cursor: pointer; border: 1px solid #2a2f3d; height: 100%; position: relative; }
-        .game-card:hover { transform: translateY(-5px); border-color: #4facfe; }
+        .game-card:hover { transform: translateY(-3px); border-color: #4facfe; }
+        
         .card-img-wrapper { width: 100%; aspect-ratio: 1/1; overflow: hidden; border-bottom: 1px solid #2a2f3d; position: relative; }
         .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        .game-card:hover .card-img-wrapper img { transform: scale(1.1); }
-        .card-body { padding: 10px 5px; text-align: center; }
-        .card-title { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-category { font-size: 9px; color: #8b9bb4; display: block; margin-bottom: 4px; }
+        
+        .card-body { padding: 8px 4px; text-align: center; }
+        .card-title { font-size: 11px; font-weight: 600; color: #fff; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-category { font-size: 9px; color: #8b9bb4; display: block; margin-bottom: 3px; }
         .btn-card { background: #2a2f3d; color: #4facfe; font-size: 9px; padding: 2px 8px; border-radius: 20px; border: 1px solid #4facfe; display: inline-block; font-weight: bold; }
         
         /* BADGES */
@@ -44,48 +66,37 @@
 
         /* FILTER SCROLL */
         .filter-scroll { overflow-x: auto; white-space: nowrap; padding: 0 20px 10px 20px; scrollbar-width: none; } 
-        .btn-filter { display: inline-block; padding: 6px 14px; margin-right: 6px; background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; color: #a0aec0; font-size: 12px; cursor: pointer; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .btn-filter { display: inline-block; padding: 6px 14px; margin-right: 6px; background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; color: #a0aec0; font-size: 11px; cursor: pointer; }
         .btn-filter.active { background: #4facfe; color: #000; font-weight: bold; border-color: #4facfe; }
         
-        /* NAVIGASI BAWAH (FIX IKON KECIL) */
+        /* NAVIGASI BAWAH (FIXED CENTERED) */
         .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            height: 70px; /* Tinggi ditambah dikit */
-            background: #181b24; border-top: 1px solid #232733; 
-            display: flex; justify-content: space-around; align-items: center; 
-            z-index: 1000; 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); /* Posisi Fix Tengah */
+            width: 100%; max-width: 480px; /* Lebar ngikutin Container Utama */
+            height: 70px; background: #181b24; border-top: 1px solid #232733; 
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000; 
         }
-        .nav-item { 
-            text-align: center; 
-            color: #64748b; 
-            font-size: 11px; /* Teks sedikit lebih besar */
-            cursor: pointer; 
-            text-decoration: none; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            width: 33%;
-        }
-        .nav-item i { 
-            font-size: 24px; /* UKURAN IKON DIPERBESAR */
-            margin-bottom: 4px; 
-            display: block;
-        }
+        .nav-item { text-align: center; color: #64748b; font-size: 10px; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 25%; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; }
         .nav-item.active { color: #4facfe; }
         
         /* MODALS & FORM */
         .modal-content { background: #181b24; color: #fff; border: 1px solid #2a2f3d; border-radius: 16px; }
         .variant-item { background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; padding: 10px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; }
         .variant-item.selected { border-color: #4facfe; background: rgba(79,172,254,0.1); }
-        .form-control-dark { background-color: #0f172a !important; border: 1px solid #4facfe !important; color: #ffffff !important; }
+        .form-control-dark { background-color: #0f172a !important; border: 1px solid #4facfe !important; color: #ffffff !important; font-weight: 500; }
         .form-control-dark::placeholder { color: #94a3b8 !important; opacity: 0.8; }
         .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 10px; border-radius: 8px; }
-        .data-instant-box { background: #0d1117; border: 1px dashed #00f2fe; color: #00f2fe; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all; margin-bottom: 10px; }
+        .data-instant-box { background: #0d1117; border: 1px dashed #00f2fe; color: #00f2fe; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 13px; word-break: break-all; margin-bottom: 10px; }
         
-        /* RESPONSIVE GRID */
-        @media (min-width: 992px) { .col-lg-2 { width: 16.666%; } }
-        @media (max-width: 768px) { .col-4 { width: 33.333%; padding: 4px; } .card-body { padding: 8px 4px; } .card-title { font-size: 10px; } .btn-card { font-size: 8px; padding: 2px 6px; } }
+        /* HASIL PENCARIAN PESANAN */
+        .order-result { background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; padding: 15px; margin-top: 15px; display: none; }
+        .label-result { color: #8b9bb4; font-size: 11px; margin-bottom: 2px; }
+        .value-result { color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 10px; }
+
+        /* GRID SYSTEM KHUSUS (3 Kolom Selalu) */
+        .col-4 { width: 33.333%; padding: 4px; }
     </style>
 </head>
 <body>
@@ -98,9 +109,7 @@
             <input type="text" id="searchInput" class="search-box" placeholder="Cari game atau aplikasi..." onkeyup="cariProduk()">
         </div>
 
-        <div class="hero-container">
-            <img src="banner.png" class="hero-banner" alt="Banner Promo" onerror="this.style.display='none'">
-        </div>
+        <div class="hero-container"><img src="banner.png" class="hero-banner" alt="Banner Promo" onerror="this.style.display='none'"></div>
 
         <div class="filter-scroll">
             <div class="btn-filter active" onclick="filterProduk('Semua', this)">Semua</div>
@@ -117,6 +126,9 @@
     </div> 
 
     <div class="bottom-nav">
+        <div class="nav-item" onclick="new bootstrap.Modal(document.getElementById('modalCariOrder')).show()">
+            <i class="fas fa-search"></i><span>Cek Order</span>
+        </div>
         <div class="nav-item" onclick="new bootstrap.Modal(document.getElementById('modalCaraOrder')).show()">
             <i class="fas fa-book-open"></i><span>Cara Order</span>
         </div>
@@ -129,6 +141,23 @@
     </div>
 
     <div class="modal fade" id="modalVarian" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 pb-0"><h5 class="fw-bold mb-0" id="vNamaProduk">Produk</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="listVarian"></div></div><div class="modal-footer d-block border-0 pt-0"><div class="d-flex justify-content-between mb-2"><small>Total:</small><span id="vTotalHarga" class="fw-bold text-primary">Rp 0</span></div><button id="btnLanjutBayar" class="btn btn-primary-custom disabled" onclick="bukaQRIS()">LANJUT BAYAR</button></div></div></div></div>
+
+    <div class="modal fade" id="modalCariOrder" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Cek Status Pesanan</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body pt-0">
+        <p class="small text-muted mb-2">Masukkan Order ID (Contoh: TRX-17823) untuk melihat barang/status pesanan.</p>
+        <div class="input-group mb-3">
+            <input type="text" id="inputCariTRX" class="form-control form-control-dark" placeholder="Masukkan Order ID...">
+            <button class="btn btn-primary" onclick="lacakPesanan()"><i class="fas fa-search"></i></button>
+        </div>
+        <div id="hasilPencarian" class="order-result">
+            <div class="text-center mb-3 border-bottom border-secondary pb-2"><i class="fas fa-receipt fa-2x text-primary mb-2"></i><h6 class="fw-bold text-white">Detail Pesanan</h6></div>
+            <div>
+                <div class="label-result">ID Order:</div><div class="value-result text-info" id="resID">-</div>
+                <div class="label-result">Produk:</div><div class="value-result" id="resProduk">-</div>
+                <div class="label-result">Status:</div><div class="value-result"><span class="badge bg-success">LUNAS</span></div>
+                <div id="boxBarang" style="display:none;"><div class="label-result text-warning mt-3">DATA BARANG / AKUN:</div><div class="data-instant-box mt-1" id="resDataBarang"></div><button onclick="copyDataRes()" class="btn btn-sm btn-outline-info w-100"><i class="fas fa-copy me-1"></i> Salin Data</button></div>
+            </div>
+        </div>
+    </div></div></div></div>
     <div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Pembayaran QRIS</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center pt-0">
         <div class="alert alert-primary py-1 px-2 d-inline-block small mb-3"><i class="fas fa-clock"></i> <span id="countdown">10:00</span></div>
         <div class="bg-white p-2 rounded mb-3 mx-auto" style="width: 180px;"><img src="qris.jpg" class="img-fluid" onerror="this.src='https://via.placeholder.com/200?text=QRIS'"></div>
@@ -142,11 +171,15 @@
         <button onclick="tandaiLunas()" class="btn btn-primary-custom mt-3">SAYA SUDAH BAYAR</button>
     </div></div></div></div>
 
-    <div class="modal fade" id="modalSukses" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-check-circle text-success mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pesanan Dibuat!</h5><p class="small text-muted mb-3">Segera kirim bukti pembayaran.</p><div class="mb-3 text-center p-3 rounded border border-info bg-dark" onclick="triggerUpload()"><i id="iconUploadBukti" class="fas fa-cloud-upload-alt fa-lg text-info me-2"></i><span id="textUploadBukti" class="small text-info fw-bold">KLIK UNTUK UPLOAD BUKTI</span><div id="progressArea" class="progress mt-2" style="height: 5px; display: none;"><div id="progressBar" class="progress-bar bg-info" style="width: 0%"></div></div><img id="previewBukti" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mt-2 rounded"></div><input type="file" id="fileBukti" class="d-none" accept="image/*"><input type="hidden" id="linkBuktiHosting"><button id="btnKirimWA" onclick="kirimWAOtomatis()" class="btn btn-success w-100 fw-bold mb-2 disabled"><i class="fab fa-whatsapp me-2"></i>KIRIM KONFIRMASI (Tunggu Upload)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
+    <div class="modal fade" id="modalSukses" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-check-circle text-success mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pesanan Dibuat!</h5><p class="small text-muted mb-3">Segera kirim bukti pembayaran.</p>
+    <div class="bg-dark p-2 rounded border border-secondary mb-3 text-start small">Order ID: <span id="sId" class="text-info fw-bold"></span><br><span class="text-muted" style="font-size:10px;">*Simpan Order ID ini untuk cek pesanan.</span></div>
+    <div class="mb-3 text-center p-3 rounded border border-info bg-dark" onclick="triggerUpload()"><i id="iconUploadBukti" class="fas fa-cloud-upload-alt fa-lg text-info me-2"></i><span id="textUploadBukti" class="small text-info fw-bold">KLIK UNTUK UPLOAD BUKTI</span><div id="progressArea" class="progress mt-2" style="height: 5px; display: none;"><div id="progressBar" class="progress-bar bg-info" style="width: 0%"></div></div><img id="previewBukti" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mt-2 rounded"></div><input type="file" id="fileBukti" class="d-none" accept="image/*"><input type="hidden" id="linkBuktiHosting"><button id="btnKirimWA" onclick="kirimWAOtomatis()" class="btn btn-success w-100 fw-bold mb-2 disabled"><i class="fab fa-whatsapp me-2"></i>KIRIM KONFIRMASI (Tunggu Upload)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
 
-    <div class="modal fade" id="modalInstant" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-bolt text-warning mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pembayaran Dikonfirmasi!</h5><div class="data-instant-box"><span id="textDataInstant">Memuat data...</span><button onclick="copyData()" class="btn btn-sm btn-outline-info position-absolute top-0 end-0 m-1" style="font-size:10px;">Salin</button></div><div class="alert alert-warning small py-1" style="font-size: 11px;">Simpan data ini. Halaman akan hilang jika ditutup.</div><button onclick="laporAdminInstant()" class="btn btn-success w-100 fw-bold mb-2"><i class="fab fa-whatsapp me-2"></i>Lapor Admin (Selesai)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
+    <div class="modal fade" id="modalInstant" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-bolt text-warning mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pembayaran Dikonfirmasi!</h5>
+    <div class="bg-dark p-2 rounded border border-secondary mb-3 text-start small">Order ID: <span id="iId" class="text-info fw-bold"></span><br><span class="text-muted" style="font-size:10px;">*Gunakan ID ini untuk cek kembali data nanti.</span></div>
+    <div class="data-instant-box"><span id="textDataInstant">Memuat data...</span><button onclick="copyData()" class="btn btn-sm btn-outline-info position-absolute top-0 end-0 m-1" style="font-size:10px;">Salin</button></div><div class="alert alert-warning small py-1" style="font-size: 11px;">Simpan data ini. Halaman akan hilang jika ditutup.</div><button onclick="laporAdminInstant()" class="btn btn-success w-100 fw-bold mb-2"><i class="fab fa-whatsapp me-2"></i>Lapor Admin (Selesai)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
 
-    <div class="modal fade" id="modalCaraOrder" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Cara Order</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body small pt-0"><ol class="ps-3 mb-0"><li>Pilih produk.</li><li>Isi data & Bayar QRIS.</li><li>Upload bukti (Manual) / Data Muncul (Instant).</li></ol></div></div></div></div>
+    <div class="modal fade" id="modalCaraOrder" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Cara Order</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body small pt-0"><ol class="ps-3 mb-0"><li>Pilih produk.</li><li>Isi data & Bayar QRIS.</li><li>Simpan <b>Order ID</b>.</li><li>Cek Status di menu 'Cek Order'.</li></ol></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
@@ -186,6 +219,7 @@
             });
         };
 
+        // --- FUNGSI RENDER GRID (3 KOLOM SELALU) ---
         function render(c) {
             let data = (c === 'Semua') ? db : db.filter(p => p.kat === c);
             let h = document.getElementById('areaProduk'); h.innerHTML = '';
@@ -198,37 +232,42 @@
 
             Object.keys(groupedData).sort().forEach(kat => {
                 let icon = 'fa-cube';
-                if(kat === 'Streaming') icon = 'fa-play-circle';
-                else if(kat === 'Editing') icon = 'fa-pen-nib';
-                else if(kat === 'AI Tools') icon = 'fa-robot';
-                else if(kat === 'Utility') icon = 'fa-tools';
-                else if(kat === 'Sosmed') icon = 'fa-hashtag';
-                else if(kat === 'VPN') icon = 'fa-shield-alt';
-                else if(kat === 'Game') icon = 'fa-gamepad';
-
+                if(kat === 'Streaming') icon = 'fa-play-circle'; else if(kat === 'Editing') icon = 'fa-pen-nib'; else if(kat === 'AI Tools') icon = 'fa-robot'; else if(kat === 'Utility') icon = 'fa-tools'; else if(kat === 'Sosmed') icon = 'fa-hashtag'; else if(kat === 'VPN') icon = 'fa-shield-alt'; else if(kat === 'Game') icon = 'fa-gamepad';
+                
                 h.innerHTML += `<div class="col-12"><div class="section-title"><i class="fas ${icon} me-2 text-primary"></i> ${kat.toUpperCase()}</div></div>`;
                 
                 groupedData[kat].forEach((p) => {
                     let pr = (p.varian && p.varian.length > 0) ? p.varian[0].harga : (p.harga || 0);
                     let isHotBadge = p.isHot ? '<div class="badge-top-left">HOT 🔥</div>' : '';
                     let instantBadge = (p.tipeKirim === 'instant') ? '<div class="badge-top-right">AUTO ⚡</div>' : '';
-
-                    h.innerHTML += `
-                    <div class="col-4 col-md-2">
-                        <div class="game-card" onclick="cekProduk('${p.id}')">
-                            ${isHotBadge} ${instantBadge}
-                            <div class="card-img-wrapper"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/150'"></div>
-                            <div class="card-body">
-                                <div class="card-title">${p.nama}</div>
-                                <span class="card-category">${p.kat}</span>
-                                <div class="btn-card">Rp ${parseInt(pr).toLocaleString()}</div>
-                            </div>
-                        </div>
-                    </div>`;
+                    
+                    // TETAP PAKAI col-4 AGAR 3 KOLOM SEBARIS
+                    h.innerHTML += `<div class="col-4"><div class="game-card" onclick="cekProduk('${p.id}')">${isHotBadge} ${instantBadge}<div class="card-img-wrapper"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/150'"></div><div class="card-body"><div class="card-title">${p.nama}</div><span class="card-category">${p.kat}</span><div class="btn-card">Rp ${parseInt(pr).toLocaleString()}</div></div></div></div>`;
                 });
             });
         }
 
+        // --- FUNGSI LACAK PESANAN ---
+        function lacakPesanan() {
+            let id = document.getElementById('inputCariTRX').value.trim();
+            if(!id) return alert("Masukkan Order ID dulu!");
+            firebase.database().ref('transaksi/' + id).once('value').then((snapshot) => {
+                if(snapshot.exists()) {
+                    let data = snapshot.val();
+                    document.getElementById('resID').innerText = data.id;
+                    document.getElementById('resProduk').innerText = data.produk + " - " + data.varian;
+                    let boxBarang = document.getElementById('boxBarang');
+                    if(data.dataBarang && data.dataBarang !== "-") {
+                        boxBarang.style.display = 'block';
+                        document.getElementById('resDataBarang').innerText = data.dataBarang;
+                    } else { boxBarang.style.display = 'none'; }
+                    document.getElementById('hasilPencarian').style.display = 'block';
+                } else { alert("Order ID tidak ditemukan!"); document.getElementById('hasilPencarian').style.display = 'none'; }
+            });
+        }
+        function copyDataRes() { navigator.clipboard.writeText(document.getElementById('resDataBarang').innerText).then(() => alert("Data tersalin!")); }
+
+        // --- FUNGSI TRANSAKSI & LOGIC LAINNYA ---
         function filterProduk(c, el) { document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active')); el.classList.add('active'); render(c); }
         function cariProduk() { let key = document.getElementById('searchInput').value.toLowerCase(); renderGrid(db.filter(p => p.nama.toLowerCase().includes(key))); }
         function cekProduk(id) {
@@ -264,11 +303,17 @@
             if(!n || !w) return alert("Nama & WA Wajib!");
             firebase.database().ref(`produk/${produkAktif.id}/varian/${varianPilihan.index}/stok`).transaction((c) => (c || 0) - 1);
             clearInterval(timerInterval);
-            trxData = { id: 'TRX-'+Math.floor(Math.random()*100000), produk: produkAktif.nama, varian: varianPilihan.nama, harga: "Rp "+parseInt(varianPilihan.harga).toLocaleString(), nama: n, wa: w, cat: document.getElementById('inputCatatan').value || "-" };
+            let uniqueID = 'TRX-' + Math.floor(Date.now() / 1000); 
+            let isiDataBarang = (produkAktif.tipeKirim === 'instant' && produkAktif.dataInstant) ? produkAktif.dataInstant : "-";
+            let transaksiBaru = { id: uniqueID, nama: n, wa: w, produk: produkAktif.nama, varian: varianPilihan.nama, harga: "Rp "+parseInt(varianPilihan.harga).toLocaleString(), catatan: document.getElementById('inputCatatan').value || "-", dataBarang: isiDataBarang, tanggal: new Date().toLocaleString() };
+            firebase.database().ref('transaksi/' + uniqueID).set(transaksiBaru);
+            trxData = transaksiBaru;
             modalBayarInstance.hide(); 
             if(produkAktif.tipeKirim === 'instant' && produkAktif.dataInstant) {
-                document.getElementById('textDataInstant').innerText = produkAktif.dataInstant; modalInstantInstance.show();
-            } else { modalSuksesInstance.show(); }
+                document.getElementById('textDataInstant').innerText = produkAktif.dataInstant; document.getElementById('iId').innerText = uniqueID; modalInstantInstance.show();
+            } else { 
+                document.getElementById('sId').innerText = uniqueID; modalSuksesInstance.show(); 
+            }
         }
         function resetUploadStatus() {
             document.getElementById('fileBukti').value = ''; document.getElementById('linkBuktiHosting').value = ''; document.getElementById('previewBukti').style.display = 'none';
@@ -300,7 +345,7 @@
         }
         function kirimWAOtomatis() {
             let linkGambar = document.getElementById('linkBuktiHosting').value; if (!linkGambar) return alert("Harap tunggu sampai proses upload selesai!");
-            let t = `Halo Admin, saya order via Web.%0A%0A*ID:* ${trxData.id}%0A*Nama:* ${trxData.nama}%0A*Item:* ${trxData.produk}%0A*Varian:* ${trxData.varian}%0A*Total:* ${trxData.harga}%0A*Catatan:* ${trxData.cat}%0A%0A*Bukti Transfer:*%0A${linkGambar}`;
+            let t = `Halo Admin, saya order via Web.%0A%0A*ID:* ${trxData.id}%0A*Nama:* ${trxData.nama}%0A*Item:* ${trxData.produk}%0A*Varian:* ${trxData.varian}%0A*Total:* ${trxData.harga}%0A*Catatan:* ${trxData.catatan}%0A%0A*Bukti Transfer:*%0A${linkGambar}`;
             window.open(`https://wa.me/${NOMOR_WA}?text=${t}`, '_blank');
         }
         function laporAdminInstant() {
