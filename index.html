@@ -10,9 +10,9 @@
         /* === GLOBAL STYLE === */
         body { background-color: #0f1219; margin: 0; padding: 0; min-height: 100vh; font-family: 'Segoe UI', sans-serif; padding-bottom: 70px; }
         
-        /* CONTAINER UTAMA (RESPONSIF) */
+        /* CONTAINER UTAMA */
         .main-container {
-            max-width: 1200px; /* Lebar ala website TopUpGim di PC */
+            max-width: 1100px; /* Lebar ideal laptop */
             margin: 0 auto;
             background-color: #0f1219;
             min-height: 100vh;
@@ -21,42 +21,40 @@
         /* HEADER */
         .app-header { background: #181b24; padding: 15px 20px; position: sticky; top: 0; z-index: 999; border-bottom: 1px solid #232733; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .logo-text { font-size: 24px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; }
-        .logo-text i { color: #4facfe; }
-        
-        .search-box { 
-            background: #232733; border: 1px solid #2d3240; 
-            border-radius: 50px; color: #fff; padding: 12px 20px; 
-            width: 100%; outline: none; margin-top: 15px; 
-            font-size: 14px; transition: 0.3s;
-        }
+        .search-box { background: #232733; border: 1px solid #2d3240; border-radius: 50px; color: #fff; padding: 10px 20px; width: 100%; outline: none; margin-top: 15px; font-size: 14px; }
         .search-box:focus { border-color: #4facfe; background: #2a2f3d; }
 
-        /* BANNER */
+        /* BANNER (FIXED SIZE) */
         .hero-container { padding: 20px; }
-        .hero-banner { width: 100%; border-radius: 16px; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .hero-banner { 
+            width: 100%; 
+            height: auto;
+            max-height: 320px; /* BATASI TINGGI DI PC BIAR GAK GEDE BANGET */
+            object-fit: cover; /* Gambar tetap proporsional */
+            border-radius: 16px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+            display: block;
+            margin: 0 auto;
+        }
 
-        /* KATEGORI & LABEL */
-        .section-title { font-size: 18px; font-weight: 700; color: #fff; margin: 25px 0 15px 10px; border-left: 4px solid #4facfe; padding-left: 10px; display: flex; align-items: center; }
+        /* CARD DESIGN (ALA TOPUPGIM) */
+        .section-title { font-size: 18px; font-weight: 700; color: #fff; margin: 25px 0 15px 10px; border-left: 4px solid #4facfe; padding-left: 10px; }
         
-        /* === GRID CARD DESIGN (ALA TOPUPGIM) === */
         .game-card {
             background: #1e222e;
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
             cursor: pointer;
             border: 1px solid #2a2f3d;
             height: 100%;
             position: relative;
         }
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.15);
-            border-color: #4facfe;
-        }
+        .game-card:hover { transform: translateY(-5px); border-color: #4facfe; }
+        
         .card-img-wrapper {
             width: 100%;
-            aspect-ratio: 1/1; /* Kotak Sempurna */
+            aspect-ratio: 1/1; /* Kotak Persegi */
             overflow: hidden;
             border-bottom: 1px solid #2a2f3d;
             position: relative;
@@ -64,73 +62,37 @@
         .card-img-wrapper img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Isi penuh kotak tanpa gepeng */
             transition: 0.3s;
         }
         .game-card:hover .card-img-wrapper img { transform: scale(1.1); }
         
-        .card-body { padding: 10px; text-align: center; }
-        .card-title { 
-            font-size: 13px; font-weight: 600; color: #fff; 
-            margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-        }
-        .card-category { font-size: 10px; color: #8b9bb4; display: block; margin-bottom: 5px; }
-        .btn-card {
-            background: #2a2f3d; color: #4facfe; font-size: 10px; 
-            padding: 4px 10px; border-radius: 20px; border: 1px solid #4facfe;
-            display: inline-block; font-weight: bold;
-        }
+        .card-body { padding: 10px 5px; text-align: center; }
+        .card-title { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-category { font-size: 9px; color: #8b9bb4; display: block; margin-bottom: 4px; }
+        .btn-card { background: #2a2f3d; color: #4facfe; font-size: 9px; padding: 2px 8px; border-radius: 20px; border: 1px solid #4facfe; display: inline-block; font-weight: bold; }
         
         /* BADGES */
-        .badge-top-left { position: absolute; top: 0; left: 0; background: #ff9f43; color: #000; font-size: 9px; padding: 3px 8px; border-bottom-right-radius: 10px; font-weight: bold; z-index: 2; }
-        .badge-top-right { position: absolute; top: 0; right: 0; background: #00f2fe; color: #000; font-size: 9px; padding: 3px 8px; border-bottom-left-radius: 10px; font-weight: bold; z-index: 2; }
+        .badge-top-left { position: absolute; top: 0; left: 0; background: #ff9f43; color: #000; font-size: 8px; padding: 2px 6px; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2; }
+        .badge-top-right { position: absolute; top: 0; right: 0; background: #00f2fe; color: #000; font-size: 8px; padding: 2px 6px; border-bottom-left-radius: 8px; font-weight: bold; z-index: 2; }
 
-        /* FILTER BUTTONS */
-        .filter-scroll { overflow-x: auto; white-space: nowrap; padding: 0 20px 10px 20px; scrollbar-width: none; -ms-overflow-style: none; }
+        /* FILTER & NAV */
+        .filter-scroll { overflow-x: auto; white-space: nowrap; padding: 0 20px 10px 20px; scrollbar-width: none; } 
         .filter-scroll::-webkit-scrollbar { display: none; }
-        .btn-filter { 
-            display: inline-block; padding: 8px 16px; margin-right: 8px; 
-            background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; 
-            color: #a0aec0; font-size: 13px; cursor: pointer; transition: 0.2s;
-        }
-        .btn-filter.active, .btn-filter:hover { background: #4facfe; color: #000; font-weight: bold; border-color: #4facfe; }
-
+        .btn-filter { display: inline-block; padding: 6px 14px; margin-right: 6px; background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; color: #a0aec0; font-size: 12px; cursor: pointer; }
+        .btn-filter.active { background: #4facfe; color: #000; font-weight: bold; border-color: #4facfe; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: #181b24; border-top: 1px solid #232733; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-item { text-align: center; color: #64748b; font-size: 10px; cursor: pointer; text-decoration: none; }
+        .nav-item.active { color: #4facfe; }
+        
         /* MODAL STYLES */
         .modal-content { background: #181b24; color: #fff; border: 1px solid #2a2f3d; border-radius: 16px; }
-        .variant-item { 
-            background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; 
-            padding: 12px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; 
-        }
-        .variant-item:hover, .variant-item.selected { border-color: #4facfe; background: rgba(79,172,254,0.1); }
-        .variant-item.disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        /* BOTTOM NAV */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            height: 65px; background: #181b24; border-top: 1px solid #232733; 
-            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-        }
-        .nav-item { text-align: center; color: #64748b; font-size: 11px; cursor: pointer; text-decoration: none; transition: 0.2s; }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
-        .nav-item.active { color: #4facfe; transform: translateY(-3px); }
-
-        /* FORM INPUT KEREN (Fix Warna) */
-        .form-control-dark { 
-            background-color: #0f172a !important; 
-            border: 1px solid #4facfe !important; 
-            color: #ffffff !important; 
-            font-weight: 500;
-        }
-        .form-control-dark::placeholder { color: #94a3b8 !important; opacity: 0.8; }
-        .form-control-dark:focus { border-color: #00f2fe !important; box-shadow: 0 0 10px rgba(79, 172, 254, 0.3) !important; }
-        .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 12px; border-radius: 10px; }
-        
-        .data-instant-box { background: #0d1117; border: 1px dashed #00f2fe; color: #00f2fe; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; word-break: break-all; margin-bottom: 15px; position: relative; }
-        
-        /* RESPONSIVE GRID */
-        @media (min-width: 992px) { .col-lg-2 { width: 16.666%; } } /* 6 Kolom di Laptop */
-        @media (max-width: 768px) { .col-4 { width: 33.333%; padding: 5px; } .card-body { padding: 8px 5px; } .card-title { font-size: 11px; } .btn-card { font-size: 9px; padding: 2px 6px; } }
+        .variant-item { background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; padding: 10px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; }
+        .variant-item.selected { border-color: #4facfe; background: rgba(79,172,254,0.1); }
+        .form-control-dark { background-color: #0f172a !important; border: 1px solid #4facfe !important; color: #ffffff !important; }
+        .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 10px; border-radius: 8px; }
+        .data-instant-box { background: #0d1117; border: 1px dashed #00f2fe; color: #00f2fe; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -166,27 +128,17 @@
         <div class="nav-item active" onclick="location.reload()"><i class="fas fa-home"></i><span>Beranda</span></div>
         <a href="testimoni.html" class="nav-item"><i class="fas fa-star"></i><span>Ulasan</span></a>
     </div>
-    <div class="modal fade" id="modalVarian" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 pb-0"><h5 class="fw-bold mb-0" id="vNamaProduk">Produk</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="listVarian"></div></div><div class="modal-footer d-block border-0 pt-0"><div class="d-flex justify-content-between mb-2"><small>Total:</small><span id="vTotalHarga" class="fw-bold text-primary">Rp 0</span></div><button id="btnLanjutBayar" class="btn btn-primary-custom disabled" onclick="bukaQRIS()">LANJUT BAYAR</button></div></div></div></div>
+    
+    ```
 
-    <div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Pembayaran QRIS</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center pt-0">
-        <div class="alert alert-primary py-1 px-2 d-inline-block small mb-3"><i class="fas fa-clock"></i> <span id="countdown">10:00</span></div>
-        <div class="bg-white p-2 rounded mb-3 mx-auto" style="width: 180px;"><img src="qris.jpg" class="img-fluid" onerror="this.src='https://via.placeholder.com/200?text=QRIS'"></div>
-        <h4 class="fw-bold text-primary mb-3" id="qTotal">Rp 0</h4>
-        <div class="text-start bg-dark p-3 rounded border border-secondary">
-            <div id="infoInstant" class="badge bg-info text-dark mb-2 w-100" style="display:none;"><i class="fas fa-bolt"></i> Produk Instant Delivery</div>
-            <label class="small text-muted ms-1 mb-1">Nama Pembeli:</label>
-            <input type="text" id="inputNama" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Masukkan Nama Kamu...">
-            <label class="small text-muted ms-1 mb-1">Nomor WhatsApp:</label>
-            <input type="number" id="inputWA" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Contoh: 08123456789">
-            <textarea id="inputCatatan" class="form-control form-control-dark form-control-sm" rows="2" style="display:none;" placeholder="Catatan (Email/Akun)"></textarea>
-        </div>
-        <button onclick="tandaiLunas()" class="btn btn-primary-custom mt-3">SAYA SUDAH BAYAR</button>
-    </div></div></div></div>
+### BAGIAN 2: Script (Render Grid 6 Kolom)
+*Ganti semua `<script>` di bawah dengan ini. Saya ubah `col-md-4` jadi `col-md-2` agar di Laptop isinya 6 produk per baris (kecil & rapi).*
 
+```html
+<div class="modal fade" id="modalVarian" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 pb-0"><h5 class="fw-bold mb-0" id="vNamaProduk">Produk</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="listVarian"></div></div><div class="modal-footer d-block border-0 pt-0"><div class="d-flex justify-content-between mb-2"><small>Total:</small><span id="vTotalHarga" class="fw-bold text-primary">Rp 0</span></div><button id="btnLanjutBayar" class="btn btn-primary-custom disabled" onclick="bukaQRIS()">LANJUT BAYAR</button></div></div></div></div>
+    <div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Pembayaran QRIS</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center pt-0"><div class="alert alert-primary py-1 px-2 d-inline-block small mb-3"><i class="fas fa-clock"></i> <span id="countdown">10:00</span></div><div class="bg-white p-2 rounded mb-3 mx-auto" style="width: 180px;"><img src="qris.jpg" class="img-fluid" onerror="this.src='https://via.placeholder.com/200?text=QRIS'"></div><h4 class="fw-bold text-primary mb-3" id="qTotal">Rp 0</h4><div class="text-start bg-dark p-3 rounded border border-secondary"><div id="infoInstant" class="badge bg-info text-dark mb-2 w-100" style="display:none;"><i class="fas fa-bolt"></i> Produk Instant Delivery</div><label class="small text-muted ms-1 mb-1">Nama Pembeli:</label><input type="text" id="inputNama" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Nama Kamu..."><label class="small text-muted ms-1 mb-1">Nomor WhatsApp:</label><input type="number" id="inputWA" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Contoh: 08123456789"><textarea id="inputCatatan" class="form-control form-control-dark form-control-sm" rows="2" style="display:none;" placeholder="Catatan (Email/Akun)"></textarea></div><button onclick="tandaiLunas()" class="btn btn-primary-custom mt-3">SAYA SUDAH BAYAR</button></div></div></div></div>
     <div class="modal fade" id="modalSukses" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-check-circle text-success mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pesanan Dibuat!</h5><p class="small text-muted mb-3">Segera kirim bukti pembayaran.</p><div class="mb-3 text-center p-3 rounded border border-info bg-dark" onclick="triggerUpload()"><i id="iconUploadBukti" class="fas fa-cloud-upload-alt fa-lg text-info me-2"></i><span id="textUploadBukti" class="small text-info fw-bold">KLIK UNTUK UPLOAD BUKTI</span><div id="progressArea" class="progress mt-2" style="height: 5px; display: none;"><div id="progressBar" class="progress-bar bg-info" style="width: 0%"></div></div><img id="previewBukti" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mt-2 rounded"></div><input type="file" id="fileBukti" class="d-none" accept="image/*"><input type="hidden" id="linkBuktiHosting"><button id="btnKirimWA" onclick="kirimWAOtomatis()" class="btn btn-success w-100 fw-bold mb-2 disabled"><i class="fab fa-whatsapp me-2"></i>KIRIM KONFIRMASI (Tunggu Upload)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
-
     <div class="modal fade" id="modalInstant" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-bolt text-warning mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pembayaran Dikonfirmasi!</h5><div class="data-instant-box"><span id="textDataInstant">Memuat data...</span><button onclick="copyData()" class="btn btn-sm btn-outline-info position-absolute top-0 end-0 m-1" style="font-size:10px;">Salin</button></div><div class="alert alert-warning small py-1" style="font-size: 11px;">Simpan data ini. Halaman akan hilang jika ditutup.</div><button onclick="laporAdminInstant()" class="btn btn-success w-100 fw-bold mb-2"><i class="fab fa-whatsapp me-2"></i>Lapor Admin (Selesai)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
-
     <div class="modal fade" id="modalCaraOrder" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Cara Order</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body small pt-0"><ol class="ps-3 mb-0"><li>Pilih produk.</li><li>Isi data & Bayar QRIS.</li><li>Upload bukti (Manual) / Data Muncul (Instant).</li></ol></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -229,7 +181,7 @@
             });
         };
 
-        // FUNGSI RENDER GRID (DENGAN IKON DINAMIS)
+        // --- FUNGSI RENDER GRID 6 KOLOM DI LAPTOP ---
         function render(c) {
             let data = (c === 'Semua') ? db : db.filter(p => p.kat === c);
             renderGrid(data);
@@ -255,7 +207,6 @@
             let allCategories = Object.keys(groupedData).sort();
 
             allCategories.forEach(kat => {
-                // LOGIKA IKON SESUAI KATEGORI
                 let icon = 'fa-cube';
                 if(kat === 'Streaming') icon = 'fa-play-circle';
                 else if(kat === 'Editing') icon = 'fa-pen-nib';
@@ -272,8 +223,9 @@
                     let isHotBadge = p.isHot ? '<div class="badge-top-left">HOT 🔥</div>' : '';
                     let instantBadge = (p.tipeKirim === 'instant') ? '<div class="badge-top-right">AUTO ⚡</div>' : '';
 
+                    // PERUBAHAN UTAMA DI SINI: col-md-2 untuk Laptop (6 kolom), col-4 untuk HP (3 kolom)
                     h.innerHTML += `
-                    <div class="col-4 col-md-4 col-lg-2">
+                    <div class="col-4 col-md-2">
                         <div class="game-card" onclick="cekProduk('${p.id}')">
                             ${isHotBadge} ${instantBadge}
                             <div class="card-img-wrapper">
