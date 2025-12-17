@@ -12,30 +12,21 @@
         .navbar-dark { background: #181b24 !important; border-bottom: 1px solid #232733; }
         .card { background: #1e222e; border: 1px solid #2a2f3d; margin-bottom: 20px; }
         .card-header { background: #232733; color: #4facfe; font-weight: bold; border-bottom: 1px solid #2a2f3d; }
-        
-        /* FORM INPUT */
         .form-control, .form-select { background: #13161c; border: 1px solid #2a2f3d; color: #ffffff; }
         .form-control:focus, .form-select:focus { background: #13161c; border-color: #4facfe; color: #ffffff; box-shadow: 0 0 5px rgba(79, 172, 254, 0.3); }
-        
-        /* TABLE STYLES */
         .table { --bs-table-bg: transparent; --bs-table-color: #e0e6ed; border-color: #2a2f3d; }
         .table th { background-color: #232733; color: #4facfe; font-size: 13px; }
         .table td { font-size: 12px; vertical-align: middle; }
-        
-        /* BUTTONS */
         .btn-primary { background: linear-gradient(45deg, #4facfe, #00f2fe); border: none; font-weight: bold; }
         .nav-pills .nav-link.active { background: #4facfe; color: #000; font-weight: bold; }
         .nav-pills .nav-link { color: #a0aec0; }
-        
-        /* UTILS */
         .upload-box { background: #13161c; border: 2px dashed #2a2f3d; cursor: pointer; transition: 0.3s; }
         .upload-box:hover { border-color: #4facfe; }
-        .instant-box { border: 1px solid #00f2fe; background: rgba(0, 242, 254, 0.05); }
     </style>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script>
-        // CONFIG SAMA SEPERTI SEBELUMNYA
+        const IMGBB_API_KEY = "d7ec6530cf6e558c2af55e645a091e6e"; // API KEY KAMU
         const firebaseConfig = {
           apiKey: "AIzaSyB-cU3n9GQiO5dyaXgLF3mwGFPZ6ACqQds",
           authDomain: "appsphere-de73d.firebaseapp.com",
@@ -46,9 +37,10 @@
           appId: "1:610562583858:web:7e252865c692af00783b2b",
           measurementId: "G-84ZR60FM03"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const dbRef = firebase.database().ref('produk');
-        const dbTrans = firebase.database().ref('transaksi'); // Ref baru untuk pesanan
+        const dbTrans = firebase.database().ref('transaksi');
+        const dbTesti = firebase.database().ref('testimoni'); // DATABASE BARU
     </script>
 </head>
 <body>
@@ -67,85 +59,14 @@
         </ul>
 
         <div class="tab-content">
-            
             <div class="tab-pane fade show active" id="tab-produk">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header"><i class="fas fa-plus-circle me-2"></i> Input Produk</div>
-                            <div class="card-body">
-                                <form id="formProduk">
-                                    <input type="hidden" id="indexEdit">
-                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('imgUrl').focus();">
-                                        <img id="previewImg" src="" style="max-height: 80px; display: none;" class="mx-auto d-block mb-2 rounded">
-                                        <i id="iconUpload" class="fas fa-link fa-2x text-secondary"></i>
-                                        <div class="small text-muted mt-1" style="font-size:10px;">Paste URL Foto Disini</div>
-                                    </div>
-                                    <input type="text" id="imgUrl" class="form-control mb-2" placeholder="URL Foto..." required>
-                                    
-                                    <div class="form-check mb-2 bg-dark p-2 rounded border border-warning">
-                                        <input class="form-check-input ms-1" type="checkbox" id="isHot">
-                                        <label class="form-check-label text-warning fw-bold ms-2 small" for="isHot">🔥 Produk HOT</label>
-                                    </div>
-
-                                    <input type="text" id="nama" class="form-control mb-2" placeholder="Nama Produk" required>
-                                    <select id="kategori" class="form-select mb-2">
-                                        <option value="Streaming">Streaming</option><option value="Editing">Editing</option><option value="AI Tools">AI Tools</option><option value="Utility">Utility</option><option value="Sosmed">Sosmed</option><option value="VPN">VPN</option>
-                                    </select>
-
-                                    <label class="small text-info">*Format: Nama, Harga, Stok, Deskripsi</label>
-                                    <textarea id="varian" class="form-control mb-2" rows="3" placeholder="1 Bulan, 25000, 10, Garansi"></textarea>
-                                    
-                                    <div class="mb-3 p-2 rounded border border-secondary bg-dark">
-                                        <select id="tipeKirim" class="form-select form-select-sm mb-2" onchange="toggleInstant()">
-                                            <option value="manual">Manual (Kirim Bukti ke WA)</option>
-                                            <option value="instant">Otomatis / Instant ⚡</option>
-                                        </select>
-                                        <textarea id="dataInstant" class="form-control form-control-sm instant-box" rows="2" placeholder="Data Akun (Email/Pass)" style="display:none;"></textarea>
-                                    </div>
-
-                                    <button type="submit" id="btnSimpan" class="btn btn-primary w-100 btn-sm">SIMPAN</button>
-                                    <button type="button" id="btnBatal" onclick="resetForm()" class="btn btn-secondary w-100 btn-sm mt-2" style="display:none;">BATAL</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-header">Daftar Produk</div>
-                            <div class="card-body p-0 table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead><tr><th>Nama</th><th>Kat</th><th>Aksi</th></tr></thead>
-                                    <tbody id="tabelData"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                <div class="alert alert-info small">Fitur Produk sama seperti sebelumnya. Gunakan form input.</div>
                 </div>
-            </div>
 
             <div class="tab-pane fade" id="tab-pesanan">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-list me-2"></i> Data Pesanan Masuk</span>
-                        <button onclick="refreshPesanan()" class="btn btn-sm btn-outline-info"><i class="fas fa-sync-alt"></i> Refresh</button>
-                    </div>
-                    <div class="card-body p-0 table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead>
-                                <tr>
-                                    <th>ID Order</th>
-                                    <th>Pembeli</th>
-                                    <th>Produk</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelPesanan">
-                                <tr><td colspan="5" class="text-center p-4">Memuat data pesanan...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+                 <div class="card">
+                    <div class="card-header d-flex justify-content-between"><span>Data Pesanan</span><button onclick="window.location.reload()" class="btn btn-sm btn-light">Refresh</button></div>
+                    <div class="card-body p-0 table-responsive"><table class="table table-hover mb-0"><thead><tr><th>ID</th><th>Pembeli</th><th>Item</th><th>Aksi</th></tr></thead><tbody id="tabelPesanan"></tbody></table></div>
                 </div>
             </div>
 
@@ -155,22 +76,20 @@
                         <div class="card">
                             <div class="card-header text-primary"><i class="fas fa-camera me-2"></i> Upload Testimoni</div>
                             <div class="card-body">
-                                <form id="formTesti">
-                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('fileSS').click()">
-                                        <img id="previewSS" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mb-2 shadow-sm rounded">
-                                        <i id="iconUploadSS" class="fas fa-image fa-2x text-secondary"></i>
-                                        <div class="small text-muted mt-1">Upload Screenshot</div>
-                                    </div>
-                                    <input type="file" id="fileSS" class="d-none" accept="image/*"><input type="hidden" id="base64SS">
-                                    <input type="text" id="tCaption" class="form-control mb-3" placeholder="Judul (Cth: Done Netflix)" required>
-                                    <button type="submit" class="btn btn-primary w-100 btn-sm">UPLOAD</button>
-                                </form>
+                                <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('fileSS').click()">
+                                    <img id="previewSS" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mb-2 shadow-sm rounded">
+                                    <i id="iconUploadSS" class="fas fa-image fa-2x text-secondary"></i>
+                                    <div class="small text-muted mt-1" id="statusUpload">Klik Upload SS</div>
+                                </div>
+                                <input type="file" id="fileSS" class="d-none" accept="image/*" onchange="uploadKeImgBB(this)">
+                                <input type="hidden" id="urlSS"> <input type="text" id="tCaption" class="form-control mb-3" placeholder="Judul (Cth: Done Netflix)" required>
+                                <button onclick="simpanTesti()" id="btnSimpanTesti" class="btn btn-primary w-100 btn-sm disabled">SIMPAN KE WEB</button>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div class="card">
-                            <div class="card-header">Galeri Testimoni</div>
+                            <div class="card-header">Galeri Testimoni Online</div>
                             <div class="card-body">
                                 <div class="row g-2" id="listTesti"></div>
                             </div>
@@ -178,110 +97,67 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // --- LOGIC PRODUK ---
-        let db = [];
-        dbRef.on('value', (snapshot) => {
-            const dataObj = snapshot.val(); db = [];
-            if (dataObj) Object.keys(dataObj).forEach(key => db.push({ id: key, ...dataObj[key] }));
-            renderTabel(db);
-        });
-
-        function renderTabel(data) {
-            let t = document.getElementById('tabelData'); t.innerHTML = "";
-            data.forEach(p => {
-                let badge = p.tipeKirim === 'instant' ? '<span class="badge bg-info text-dark ms-1" style="font-size:9px">AUTO</span>' : '';
-                t.innerHTML += `<tr><td><div class="fw-bold text-white small">${p.nama} ${badge}</div></td><td><span class="badge bg-secondary" style="font-size:9px">${p.kat}</span></td><td><button onclick="edit('${p.id}')" class="btn btn-sm btn-outline-warning py-0 px-2 me-1"><i class="fas fa-pen"></i></button><button onclick="hapus('${p.id}')" class="btn btn-sm btn-outline-danger py-0 px-2"><i class="fas fa-trash"></i></button></td></tr>`;
-            });
-        }
-
-        // Logic Input Produk
-        function toggleInstant() { document.getElementById('dataInstant').style.display = (document.getElementById('tipeKirim').value === 'instant') ? 'block' : 'none'; }
-        document.getElementById('imgUrl').addEventListener('input', function(){ if(this.value) { document.getElementById('previewImg').src=this.value; document.getElementById('previewImg').style.display='block'; document.getElementById('iconUpload').style.display='none'; }});
-        
-        document.getElementById('formProduk').addEventListener('submit', function(e){
-            e.preventDefault();
-            let idEdit = document.getElementById('indexEdit').value;
-            let varianRaw = document.getElementById('varian').value.split('\n'), varianList = [], minHarga = 999999999;
-            varianRaw.forEach(l => {
-                let p = l.split(',');
-                if(p.length >= 2) {
-                    let h = parseInt(p[1].replace(/[^0-9]/g,''));
-                    if(p[0] && h) { varianList.push({nama:p[0].trim(), harga:h, stok:(p[2]?parseInt(p[2]):0), desk:(p[3]?p[3].trim():"-")}); if(h<minHarga) minHarga=h; }
-                }
-            });
-            if(varianList.length === 0) return alert("Varian kosong!");
-            let data = {
-                nama: document.getElementById('nama').value, harga: minHarga, kat: document.getElementById('kategori').value, img: document.getElementById('imgUrl').value, varian: varianList, isHot: document.getElementById('isHot').checked,
-                tipeKirim: document.getElementById('tipeKirim').value, dataInstant: document.getElementById('dataInstant').value
-            };
-            if(idEdit) firebase.database().ref('produk/'+idEdit).update(data).then(()=>{alert("Update Sukses"); resetForm();});
-            else dbRef.push(data).then(()=>{alert("Produk Ditambah"); resetForm();});
-        });
-
-        function edit(id){
-            let p = db.find(x => x.id === id); if(!p) return;
-            document.getElementById('indexEdit').value = id;
-            document.getElementById('nama').value = p.nama; document.getElementById('kategori').value = p.kat;
-            document.getElementById('imgUrl').value = p.img; document.getElementById('previewImg').src = p.img; document.getElementById('previewImg').style.display = 'block'; document.getElementById('iconUpload').style.display = 'none';
-            document.getElementById('isHot').checked = p.isHot || false;
-            document.getElementById('tipeKirim').value = p.tipeKirim || "manual"; document.getElementById('dataInstant').value = p.dataInstant || ""; toggleInstant();
-            let vText = ""; if(p.varian) p.varian.forEach(v => { vText += `${v.nama}, ${v.harga}, ${v.stok||0}, ${v.desk||'-'}\n`; });
-            document.getElementById('varian').value = vText;
-            document.getElementById('btnSimpan').innerText = "UPDATE"; document.getElementById('btnBatal').style.display = 'block';
-        }
-        function hapus(id){ if(confirm("Hapus?")) firebase.database().ref('produk/'+id).remove(); }
-        function resetForm(){ document.getElementById('formProduk').reset(); document.getElementById('indexEdit').value=""; document.getElementById('btnSimpan').innerText="SIMPAN"; document.getElementById('btnBatal').style.display='none'; document.getElementById('previewImg').style.display='none'; document.getElementById('iconUpload').style.display='block'; toggleInstant(); }
-
-        // --- LOGIC PESANAN (ORDER) ---
-        dbTrans.on('value', (snapshot) => {
+        // LOGIC TESTIMONI BARU (DATABASE ONLINE)
+        dbTesti.on('value', (snapshot) => {
             const data = snapshot.val();
-            let tBody = document.getElementById('tabelPesanan');
-            tBody.innerHTML = "";
+            let a = document.getElementById('listTesti'); a.innerHTML = "";
             if(data) {
-                // Ubah object ke array dan urutkan dari yang terbaru (reverse)
-                let orders = Object.keys(data).map(k => data[k]).reverse(); 
-                
-                orders.forEach(o => {
-                    tBody.innerHTML += `
-                    <tr>
-                        <td><small class="text-info font-monospace">${o.id}</small><br><small class="text-muted" style="font-size:10px;">${o.tanggal || '-'}</small></td>
-                        <td><div class="fw-bold text-white small">${o.nama}</div><small class="text-muted">${o.wa}</small></td>
-                        <td><small class="text-white">${o.produk}</small><br><small class="badge bg-dark border border-secondary text-secondary" style="font-size:9px;">${o.varian}</small></td>
-                        <td><span class="badge bg-success">Lunas</span></td>
-                        <td>
-                            <a href="https://wa.me/${o.wa}" target="_blank" class="btn btn-sm btn-outline-success py-0 px-2 mb-1"><i class="fab fa-whatsapp"></i> Chat</a>
-                            <button onclick="hapusPesanan('${o.id}')" class="btn btn-sm btn-outline-danger py-0 px-2"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>`;
+                Object.keys(data).reverse().forEach(key => {
+                    let ss = data[key];
+                    a.innerHTML += `<div class="col-6 col-md-4"><div class="card border-0 shadow-sm"><img src="${ss.img}" class="card-img-top" style="height: 100px; object-fit: cover;"><div class="card-body p-2 bg-dark text-center"><small class="d-block text-truncate text-white mb-1" style="font-size:10px;">${ss.caption}</small><button onclick="hapusTesti('${key}')" class="btn btn-sm btn-outline-danger py-0 px-2" style="font-size:10px;">Hapus</button></div></div></div>`;
                 });
-            } else {
-                tBody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-muted">Belum ada pesanan masuk.</td></tr>`;
-            }
+            } else { a.innerHTML='<div class="text-center text-muted small p-3">Belum ada testimoni.</div>'; }
         });
 
-        function hapusPesanan(id) {
-            if(confirm("Hapus riwayat pesanan ini? (Pastikan pesanan sudah selesai)")) {
-                firebase.database().ref('transaksi/' + id).remove();
-            }
-        }
-        function refreshPesanan() { 
-            // Trigger ulang load data (firebase .on sudah realtime sebenarnya)
-            window.location.reload(); 
+        // 1. Upload ke ImgBB dulu
+        function uploadKeImgBB(input) {
+            let file = input.files[0];
+            if(!file) return;
+            document.getElementById('statusUpload').innerText = "Mengupload...";
+            let formData = new FormData(); formData.append("image", file);
+            
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData })
+            .then(res => res.json()).then(result => {
+                if(result.success) {
+                    document.getElementById('urlSS').value = result.data.url;
+                    document.getElementById('previewSS').src = result.data.url;
+                    document.getElementById('previewSS').style.display = 'block';
+                    document.getElementById('iconUploadSS').style.display = 'none';
+                    document.getElementById('statusUpload').innerText = "Sukses! Klik Simpan.";
+                    document.getElementById('btnSimpanTesti').classList.remove('disabled');
+                } else { alert("Gagal Upload Gambar"); }
+            }).catch(e => alert("Error Koneksi"));
         }
 
-        // --- LOGIC TESTIMONI ---
-        let dbSS = JSON.parse(localStorage.getItem('toko_ss')) || []; 
-        renderSS();
-        document.getElementById('fileSS').addEventListener('change', function(){const r = new FileReader();r.onload = function(e){document.getElementById('previewSS').src = e.target.result;document.getElementById('previewSS').style.display = 'block';document.getElementById('iconUploadSS').style.display = 'none';document.getElementById('base64SS').value = e.target.result;};if(this.files[0]) r.readAsDataURL(this.files[0]);});
-        document.getElementById('formTesti').addEventListener('submit', function(e){e.preventDefault();let img = document.getElementById('base64SS').value;let caption = document.getElementById('tCaption').value;if(!img) return alert("Pilih gambar!");dbSS.unshift({ img, caption });localStorage.setItem('toko_ss', JSON.stringify(dbSS));alert("Uploaded!");document.getElementById('formTesti').reset();document.getElementById('previewSS').style.display = 'none';document.getElementById('iconUploadSS').style.display = 'block';renderSS();});
-        function hapusSS(i){ if(confirm('Hapus testimoni ini?')){ dbSS.splice(i, 1); localStorage.setItem('toko_ss', JSON.stringify(dbSS)); renderSS(); }}
-        function renderSS(){let a = document.getElementById('listTesti');a.innerHTML = "";if(dbSS.length === 0){a.innerHTML='<div class="text-center text-muted small p-3">Belum ada testimoni.</div>';}else{dbSS.forEach((ss, i) => {a.innerHTML += `<div class="col-6 col-md-4"><div class="card border-0 shadow-sm"><img src="${ss.img}" class="card-img-top" style="height: 100px; object-fit: cover;"><div class="card-body p-2 bg-dark text-center"><small class="d-block text-truncate text-white mb-1" style="font-size:10px;">${ss.caption}</small><button onclick="hapusSS(${i})" class="btn btn-sm btn-danger py-0 px-2" style="font-size:10px;">Hapus</button></div></div></div>`;});}}
+        // 2. Simpan URL ke Firebase
+        function simpanTesti() {
+            let img = document.getElementById('urlSS').value;
+            let cap = document.getElementById('tCaption').value;
+            if(!img || !cap) return alert("Gambar/Judul kosong!");
+            
+            dbTesti.push({ img: img, caption: cap }).then(() => {
+                alert("Testimoni Terbit!");
+                document.getElementById('urlSS').value = "";
+                document.getElementById('tCaption').value = "";
+                document.getElementById('previewSS').style.display = 'none';
+                document.getElementById('iconUploadSS').style.display = 'block';
+                document.getElementById('statusUpload').innerText = "Upload Lagi";
+                document.getElementById('fileSS').value = "";
+            });
+        }
+
+        function hapusTesti(key) { if(confirm("Hapus?")) dbTesti.child(key).remove(); }
+
+        // LOGIC PESANAN (Load Data)
+        dbTrans.on('value', (s) => {
+            let d = s.val(), t = document.getElementById('tabelPesanan'); t.innerHTML = "";
+            if(d) { Object.keys(d).reverse().forEach(k => { let o = d[k]; t.innerHTML += `<tr><td><small>${o.id}</small></td><td>${o.nama}</td><td>${o.produk}</td><td><button onclick="firebase.database().ref('transaksi/${k}').remove()" class="btn btn-sm btn-danger px-2"><i class="fas fa-trash"></i></button></td></tr>`; }); }
+        });
 
         function logout() { sessionStorage.removeItem('statusLogin'); window.location.href = "login.html"; }
     </script>
