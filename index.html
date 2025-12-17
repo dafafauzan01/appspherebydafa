@@ -1,41 +1,194 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <script>if (sessionStorage.getItem('statusLogin') !== 'SUKSES') { window.location.href = "login.html"; }</script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - AppSphere</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AppSphere - Store</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        body { background-color: #0f1219; color: #e0e6ed; font-family: 'Segoe UI', sans-serif; padding-bottom: 50px; }
-        .navbar-dark { background: #181b24 !important; border-bottom: 1px solid #232733; }
-        .card { background: #1e222e; border: 1px solid #2a2f3d; margin-bottom: 20px; }
-        .card-header { background: #232733; color: #4facfe; font-weight: bold; border-bottom: 1px solid #2a2f3d; }
+        /* === GLOBAL STYLE (MOBILE FRAME LOCK) === */
+        body { 
+            background-color: #000000; /* Latar belakang luar Hitam Pekat */
+            margin: 0; padding: 0; 
+            min-height: 100vh; 
+            font-family: 'Segoe UI', sans-serif; 
+            padding-bottom: 80px; 
+            display: flex;             /* Flexbox untuk menengahkan */
+            justify-content: center;   /* Posisi di tengah layar PC */
+        }
         
-        /* FORM INPUT */
-        .form-control, .form-select { background: #13161c; border: 1px solid #2a2f3d; color: #ffffff; }
-        .form-control:focus, .form-select:focus { background: #13161c; border-color: #4facfe; color: #ffffff; box-shadow: 0 0 5px rgba(79, 172, 254, 0.3); }
+        .main-container { 
+            width: 100%; 
+            max-width: 480px;          /* KUNCI LEBAR SEPERTI HP */
+            background-color: #0f1219; /* Warna dasar Aplikasi */
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 30px rgba(79, 172, 254, 0.1); /* Efek glowing dikit di pinggir */
+            border-left: 1px solid #1c263d;
+            border-right: 1px solid #1c263d;
+        }
+
+        /* HEADER */
+        .app-header { background: #181b24; padding: 15px 20px; position: sticky; top: 0; z-index: 999; border-bottom: 1px solid #232733; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .logo-text { font-size: 24px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; }
+        .search-box { background: #232733; border: 1px solid #2d3240; border-radius: 50px; color: #fff; padding: 10px 20px; width: 100%; outline: none; margin-top: 15px; font-size: 14px; }
+        .search-box:focus { border-color: #4facfe; background: #2a2f3d; }
+
+        /* BANNER */
+        .hero-container { padding: 20px; text-align: center; }
+        .hero-banner { 
+            width: 100%; 
+            height: auto; 
+            aspect-ratio: 2/1; /* Rasio standar banner */
+            object-fit: cover; 
+            border-radius: 16px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+        }
+
+        /* CARD DESIGN (GRID 3 KOLOM) */
+        .section-title { font-size: 16px; font-weight: 700; color: #fff; margin: 25px 0 10px 10px; border-left: 4px solid #4facfe; padding-left: 10px; }
+        .game-card { background: #1e222e; border-radius: 12px; overflow: hidden; transition: transform 0.2s; cursor: pointer; border: 1px solid #2a2f3d; height: 100%; position: relative; }
+        .game-card:hover { transform: translateY(-3px); border-color: #4facfe; }
         
-        /* TABLE STYLES */
-        .table { --bs-table-bg: transparent; --bs-table-color: #e0e6ed; border-color: #2a2f3d; }
-        .table th { background-color: #232733; color: #4facfe; font-size: 13px; }
-        .table td { font-size: 12px; vertical-align: middle; }
+        .card-img-wrapper { width: 100%; aspect-ratio: 1/1; overflow: hidden; border-bottom: 1px solid #2a2f3d; position: relative; }
+        .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         
-        /* BUTTONS */
-        .btn-primary { background: linear-gradient(45deg, #4facfe, #00f2fe); border: none; font-weight: bold; }
-        .nav-pills .nav-link.active { background: #4facfe; color: #000; font-weight: bold; }
-        .nav-pills .nav-link { color: #a0aec0; }
+        .card-body { padding: 8px 4px; text-align: center; }
+        .card-title { font-size: 11px; font-weight: 600; color: #fff; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-category { font-size: 9px; color: #8b9bb4; display: block; margin-bottom: 3px; }
+        .btn-card { background: #2a2f3d; color: #4facfe; font-size: 9px; padding: 2px 8px; border-radius: 20px; border: 1px solid #4facfe; display: inline-block; font-weight: bold; }
         
-        /* UTILS */
-        .upload-box { background: #13161c; border: 2px dashed #2a2f3d; cursor: pointer; transition: 0.3s; }
-        .upload-box:hover { border-color: #4facfe; }
-        .instant-box { border: 1px solid #00f2fe; background: rgba(0, 242, 254, 0.05); }
+        /* BADGES */
+        .badge-top-left { position: absolute; top: 0; left: 0; background: #ff9f43; color: #000; font-size: 8px; padding: 2px 6px; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2; }
+        .badge-top-right { position: absolute; top: 0; right: 0; background: #00f2fe; color: #000; font-size: 8px; padding: 2px 6px; border-bottom-left-radius: 8px; font-weight: bold; z-index: 2; }
+
+        /* FILTER SCROLL */
+        .filter-scroll { overflow-x: auto; white-space: nowrap; padding: 0 20px 10px 20px; scrollbar-width: none; } 
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .btn-filter { display: inline-block; padding: 6px 14px; margin-right: 6px; background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; color: #a0aec0; font-size: 11px; cursor: pointer; }
+        .btn-filter.active { background: #4facfe; color: #000; font-weight: bold; border-color: #4facfe; }
+        
+        /* NAVIGASI BAWAH (FIXED CENTERED) */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); /* Posisi Fix Tengah */
+            width: 100%; max-width: 480px; /* Lebar ngikutin Container Utama */
+            height: 70px; background: #181b24; border-top: 1px solid #232733; 
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000; 
+        }
+        .nav-item { text-align: center; color: #64748b; font-size: 10px; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 25%; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; display: block; }
+        .nav-item.active { color: #4facfe; }
+        
+        /* MODALS & FORM */
+        .modal-content { background: #181b24; color: #fff; border: 1px solid #2a2f3d; border-radius: 16px; }
+        .variant-item { background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; padding: 10px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; }
+        .variant-item.selected { border-color: #4facfe; background: rgba(79,172,254,0.1); }
+        .form-control-dark { background-color: #0f172a !important; border: 1px solid #4facfe !important; color: #ffffff !important; font-weight: 500; }
+        .form-control-dark::placeholder { color: #94a3b8 !important; opacity: 0.8; }
+        .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 10px; border-radius: 8px; }
+        .data-instant-box { background: #0d1117; border: 1px dashed #00f2fe; color: #00f2fe; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 13px; word-break: break-all; margin-bottom: 10px; }
+        
+        /* HASIL PENCARIAN PESANAN */
+        .order-result { background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; padding: 15px; margin-top: 15px; display: none; }
+        .label-result { color: #8b9bb4; font-size: 11px; margin-bottom: 2px; }
+        .value-result { color: #fff; font-weight: bold; font-size: 14px; margin-bottom: 10px; }
+
+        /* GRID SYSTEM KHUSUS (3 Kolom Selalu) */
+        .col-4 { width: 33.333%; padding: 4px; }
     </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="app-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="index.html" class="logo-text"><i class="fas fa-cube me-2"></i>AppSphere</a>
+                <a href="login.html" class="text-secondary"><i class="fas fa-user-circle fa-lg"></i></a>
+            </div>
+            <input type="text" id="searchInput" class="search-box" placeholder="Cari game atau aplikasi..." onkeyup="cariProduk()">
+        </div>
+
+        <div class="hero-container"><img src="banner.png" class="hero-banner" alt="Banner Promo" onerror="this.style.display='none'"></div>
+
+        <div class="filter-scroll">
+            <div class="btn-filter active" onclick="filterProduk('Semua', this)">Semua</div>
+            <div class="btn-filter" onclick="filterProduk('Streaming', this)">Streaming</div>
+            <div class="btn-filter" onclick="filterProduk('Editing', this)">Editing</div>
+            <div class="btn-filter" onclick="filterProduk('AI Tools', this)">AI Tools</div>
+            <div class="btn-filter" onclick="filterProduk('Utility', this)">Utility</div>
+            <div class="btn-filter" onclick="filterProduk('Sosmed', this)">Sosmed</div>
+            <div class="btn-filter" onclick="filterProduk('VPN', this)">VPN</div>
+        </div>
+
+        <div id="areaProduk" class="row g-2 px-3 pb-5"></div>
+        <div id="msgKosong" class="text-center mt-5 text-secondary" style="display:none;"><i class="fas fa-ghost fa-3x mb-3"></i><p>Produk tidak ditemukan.</p></div>
+    </div> 
+
+    <div class="bottom-nav">
+        <div class="nav-item" onclick="new bootstrap.Modal(document.getElementById('modalCariOrder')).show()">
+            <i class="fas fa-search"></i><span>Cek Order</span>
+        </div>
+        <div class="nav-item" onclick="new bootstrap.Modal(document.getElementById('modalCaraOrder')).show()">
+            <i class="fas fa-book-open"></i><span>Cara Order</span>
+        </div>
+        <div class="nav-item active" onclick="location.reload()">
+            <i class="fas fa-home"></i><span>Beranda</span>
+        </div>
+        <a href="testimoni.html" class="nav-item">
+            <i class="fas fa-star"></i><span>Testimoni</span>
+        </a>
+    </div>
+
+    <div class="modal fade" id="modalVarian" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 pb-0"><h5 class="fw-bold mb-0" id="vNamaProduk">Produk</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="listVarian"></div></div><div class="modal-footer d-block border-0 pt-0"><div class="d-flex justify-content-between mb-2"><small>Total:</small><span id="vTotalHarga" class="fw-bold text-primary">Rp 0</span></div><button id="btnLanjutBayar" class="btn btn-primary-custom disabled" onclick="bukaQRIS()">LANJUT BAYAR</button></div></div></div></div>
+
+    <div class="modal fade" id="modalCariOrder" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Cek Status Pesanan</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body pt-0">
+        <p class="small text-muted mb-2">Masukkan Order ID (Contoh: TRX-17823) untuk melihat barang/status pesanan.</p>
+        <div class="input-group mb-3">
+            <input type="text" id="inputCariTRX" class="form-control form-control-dark" placeholder="Masukkan Order ID...">
+            <button class="btn btn-primary" onclick="lacakPesanan()"><i class="fas fa-search"></i></button>
+        </div>
+        <div id="hasilPencarian" class="order-result">
+            <div class="text-center mb-3 border-bottom border-secondary pb-2"><i class="fas fa-receipt fa-2x text-primary mb-2"></i><h6 class="fw-bold text-white">Detail Pesanan</h6></div>
+            <div>
+                <div class="label-result">ID Order:</div><div class="value-result text-info" id="resID">-</div>
+                <div class="label-result">Produk:</div><div class="value-result" id="resProduk">-</div>
+                <div class="label-result">Status:</div><div class="value-result"><span class="badge bg-success">LUNAS</span></div>
+                <div id="boxBarang" style="display:none;"><div class="label-result text-warning mt-3">DATA BARANG / AKUN:</div><div class="data-instant-box mt-1" id="resDataBarang"></div><button onclick="copyDataRes()" class="btn btn-sm btn-outline-info w-100"><i class="fas fa-copy me-1"></i> Salin Data</button></div>
+            </div>
+        </div>
+    </div></div></div></div>
+    <div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Pembayaran QRIS</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center pt-0">
+        <div class="alert alert-primary py-1 px-2 d-inline-block small mb-3"><i class="fas fa-clock"></i> <span id="countdown">10:00</span></div>
+        <div class="bg-white p-2 rounded mb-3 mx-auto" style="width: 180px;"><img src="qris.jpg" class="img-fluid" onerror="this.src='https://via.placeholder.com/200?text=QRIS'"></div>
+        <h4 class="fw-bold text-primary mb-3" id="qTotal">Rp 0</h4>
+        <div class="text-start bg-dark p-3 rounded border border-secondary">
+            <div id="infoInstant" class="badge bg-info text-dark mb-2 w-100" style="display:none;"><i class="fas fa-bolt"></i> Produk Instant Delivery</div>
+            <label class="small text-muted ms-1 mb-1">Nama Pembeli:</label><input type="text" id="inputNama" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Masukkan Nama Kamu...">
+            <label class="small text-muted ms-1 mb-1">Nomor WhatsApp:</label><input type="number" id="inputWA" class="form-control form-control-dark mb-2 form-control-sm" placeholder="Contoh: 08123456789">
+            <textarea id="inputCatatan" class="form-control form-control-dark form-control-sm" rows="2" style="display:none;" placeholder="Catatan (Email/Akun)"></textarea>
+        </div>
+        <button onclick="tandaiLunas()" class="btn btn-primary-custom mt-3">SAYA SUDAH BAYAR</button>
+    </div></div></div></div>
+
+    <div class="modal fade" id="modalSukses" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-check-circle text-success mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pesanan Dibuat!</h5><p class="small text-muted mb-3">Segera kirim bukti pembayaran.</p>
+    <div class="bg-dark p-2 rounded border border-secondary mb-3 text-start small">Order ID: <span id="sId" class="text-info fw-bold"></span><br><span class="text-muted" style="font-size:10px;">*Simpan Order ID ini untuk cek pesanan.</span></div>
+    <div class="mb-3 text-center p-3 rounded border border-info bg-dark" onclick="triggerUpload()"><i id="iconUploadBukti" class="fas fa-cloud-upload-alt fa-lg text-info me-2"></i><span id="textUploadBukti" class="small text-info fw-bold">KLIK UNTUK UPLOAD BUKTI</span><div id="progressArea" class="progress mt-2" style="height: 5px; display: none;"><div id="progressBar" class="progress-bar bg-info" style="width: 0%"></div></div><img id="previewBukti" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mt-2 rounded"></div><input type="file" id="fileBukti" class="d-none" accept="image/*"><input type="hidden" id="linkBuktiHosting"><button id="btnKirimWA" onclick="kirimWAOtomatis()" class="btn btn-success w-100 fw-bold mb-2 disabled"><i class="fab fa-whatsapp me-2"></i>KIRIM KONFIRMASI (Tunggu Upload)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
+
+    <div class="modal fade" id="modalInstant" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content text-center p-4"><i class="fas fa-bolt text-warning mb-3" style="font-size: 50px;"></i><h5 class="fw-bold">Pembayaran Dikonfirmasi!</h5>
+    <div class="bg-dark p-2 rounded border border-secondary mb-3 text-start small">Order ID: <span id="iId" class="text-info fw-bold"></span><br><span class="text-muted" style="font-size:10px;">*Gunakan ID ini untuk cek kembali data nanti.</span></div>
+    <div class="data-instant-box"><span id="textDataInstant">Memuat data...</span><button onclick="copyData()" class="btn btn-sm btn-outline-info position-absolute top-0 end-0 m-1" style="font-size:10px;">Salin</button></div><div class="alert alert-warning small py-1" style="font-size: 11px;">Simpan data ini. Halaman akan hilang jika ditutup.</div><button onclick="laporAdminInstant()" class="btn btn-success w-100 fw-bold mb-2"><i class="fab fa-whatsapp me-2"></i>Lapor Admin (Selesai)</button><button onclick="location.reload()" class="btn btn-outline-secondary w-100 btn-sm">Tutup</button></div></div></div>
+
+    <div class="modal fade" id="modalCaraOrder" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Cara Order</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body small pt-0"><ol class="ps-3 mb-0"><li>Pilih produk.</li><li>Isi data & Bayar QRIS.</li><li>Simpan <b>Order ID</b>.</li><li>Cek Status di menu 'Cek Order'.</li></ol></div></div></div></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    
     <script>
-        // CONFIG SAMA SEPERTI SEBELUMNYA
+        const IMGBB_API_KEY = "d7ec6530cf6e558c2af55e645a091e6e"; 
+        const NOMOR_WA = "6283843400022";
+
         const firebaseConfig = {
           apiKey: "AIzaSyB-cU3n9GQiO5dyaXgLF3mwGFPZ6ACqQds",
           authDomain: "appsphere-de73d.firebaseapp.com",
@@ -46,244 +199,160 @@
           appId: "1:610562583858:web:7e252865c692af00783b2b",
           measurementId: "G-84ZR60FM03"
         };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const dbRef = firebase.database().ref('produk');
-        const dbTrans = firebase.database().ref('transaksi'); // Ref baru untuk pesanan
-    </script>
-</head>
-<body>
-    <nav class="navbar navbar-dark mb-4 shadow-sm">
-        <div class="container">
-            <span class="navbar-brand fw-bold"><i class="fas fa-shield-alt me-2 text-primary"></i> ADMIN PANEL</span>
-            <button onclick="logout()" class="btn btn-sm btn-danger"><i class="fas fa-sign-out-alt"></i> Keluar</button>
-        </div>
-    </nav>
-
-    <div class="container">
-        <ul class="nav nav-pills mb-4 justify-content-center" id="pills-tab">
-            <li class="nav-item"><button class="nav-link active px-4" data-bs-toggle="pill" data-bs-target="#tab-produk"><i class="fas fa-box me-2"></i> PRODUK</button></li>
-            <li class="nav-item"><button class="nav-link px-4" data-bs-toggle="pill" data-bs-target="#tab-pesanan"><i class="fas fa-shopping-cart me-2"></i> PESANAN</button></li>
-            <li class="nav-item"><button class="nav-link px-4" data-bs-toggle="pill" data-bs-target="#tab-testi"><i class="fas fa-images me-2"></i> TESTIMONI</button></li>
-        </ul>
-
-        <div class="tab-content">
-            
-            <div class="tab-pane fade show active" id="tab-produk">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header"><i class="fas fa-plus-circle me-2"></i> Input Produk</div>
-                            <div class="card-body">
-                                <form id="formProduk">
-                                    <input type="hidden" id="indexEdit">
-                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('imgUrl').focus();">
-                                        <img id="previewImg" src="" style="max-height: 80px; display: none;" class="mx-auto d-block mb-2 rounded">
-                                        <i id="iconUpload" class="fas fa-link fa-2x text-secondary"></i>
-                                        <div class="small text-muted mt-1" style="font-size:10px;">Paste URL Foto Disini</div>
-                                    </div>
-                                    <input type="text" id="imgUrl" class="form-control mb-2" placeholder="URL Foto..." required>
-                                    
-                                    <div class="form-check mb-2 bg-dark p-2 rounded border border-warning">
-                                        <input class="form-check-input ms-1" type="checkbox" id="isHot">
-                                        <label class="form-check-label text-warning fw-bold ms-2 small" for="isHot">🔥 Produk HOT</label>
-                                    </div>
-
-                                    <input type="text" id="nama" class="form-control mb-2" placeholder="Nama Produk" required>
-                                    <select id="kategori" class="form-select mb-2">
-                                        <option value="Streaming">Streaming</option><option value="Editing">Editing</option><option value="AI Tools">AI Tools</option><option value="Utility">Utility</option><option value="Sosmed">Sosmed</option><option value="VPN">VPN</option>
-                                    </select>
-
-                                    <label class="small text-info">*Format: Nama, Harga, Stok, Deskripsi</label>
-                                    <textarea id="varian" class="form-control mb-2" rows="3" placeholder="1 Bulan, 25000, 10, Garansi"></textarea>
-                                    
-                                    <div class="mb-3 p-2 rounded border border-secondary bg-dark">
-                                        <select id="tipeKirim" class="form-select form-select-sm mb-2" onchange="toggleInstant()">
-                                            <option value="manual">Manual (Kirim Bukti ke WA)</option>
-                                            <option value="instant">Otomatis / Instant ⚡</option>
-                                        </select>
-                                        <textarea id="dataInstant" class="form-control form-control-sm instant-box" rows="2" placeholder="Data Akun (Email/Pass)" style="display:none;"></textarea>
-                                    </div>
-
-                                    <button type="submit" id="btnSimpan" class="btn btn-primary w-100 btn-sm">SIMPAN</button>
-                                    <button type="button" id="btnBatal" onclick="resetForm()" class="btn btn-secondary w-100 btn-sm mt-2" style="display:none;">BATAL</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-header">Daftar Produk</div>
-                            <div class="card-body p-0 table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead><tr><th>Nama</th><th>Kat</th><th>Aksi</th></tr></thead>
-                                    <tbody id="tabelData"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="tab-pesanan">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span><i class="fas fa-list me-2"></i> Data Pesanan Masuk</span>
-                        <button onclick="refreshPesanan()" class="btn btn-sm btn-outline-info"><i class="fas fa-sync-alt"></i> Refresh</button>
-                    </div>
-                    <div class="card-body p-0 table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead>
-                                <tr>
-                                    <th>ID Order</th>
-                                    <th>Pembeli</th>
-                                    <th>Produk</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelPesanan">
-                                <tr><td colspan="5" class="text-center p-4">Memuat data pesanan...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="tab-testi">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header text-primary"><i class="fas fa-camera me-2"></i> Upload Testimoni</div>
-                            <div class="card-body">
-                                <form id="formTesti">
-                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('fileSS').click()">
-                                        <img id="previewSS" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mb-2 shadow-sm rounded">
-                                        <i id="iconUploadSS" class="fas fa-image fa-2x text-secondary"></i>
-                                        <div class="small text-muted mt-1">Upload Screenshot</div>
-                                    </div>
-                                    <input type="file" id="fileSS" class="d-none" accept="image/*"><input type="hidden" id="base64SS">
-                                    <input type="text" id="tCaption" class="form-control mb-3" placeholder="Judul (Cth: Done Netflix)" required>
-                                    <button type="submit" class="btn btn-primary w-100 btn-sm">UPLOAD</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-header">Galeri Testimoni</div>
-                            <div class="card-body">
-                                <div class="row g-2" id="listTesti"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // --- LOGIC PRODUK ---
         let db = [];
-        dbRef.on('value', (snapshot) => {
-            const dataObj = snapshot.val(); db = [];
-            if (dataObj) Object.keys(dataObj).forEach(key => db.push({ id: key, ...dataObj[key] }));
-            renderTabel(db);
-        });
+        let produkAktif, varianPilihan, timerInterval, trxData = {};
+        let modalVarianInstance, modalBayarInstance, modalSuksesInstance, modalInstantInstance;
 
-        function renderTabel(data) {
-            let t = document.getElementById('tabelData'); t.innerHTML = "";
-            data.forEach(p => {
-                let badge = p.tipeKirim === 'instant' ? '<span class="badge bg-info text-dark ms-1" style="font-size:9px">AUTO</span>' : '';
-                t.innerHTML += `<tr><td><div class="fw-bold text-white small">${p.nama} ${badge}</div></td><td><span class="badge bg-secondary" style="font-size:9px">${p.kat}</span></td><td><button onclick="edit('${p.id}')" class="btn btn-sm btn-outline-warning py-0 px-2 me-1"><i class="fas fa-pen"></i></button><button onclick="hapus('${p.id}')" class="btn btn-sm btn-outline-danger py-0 px-2"><i class="fas fa-trash"></i></button></td></tr>`;
+        window.onload = () => {
+            modalVarianInstance = new bootstrap.Modal(document.getElementById('modalVarian'));
+            modalBayarInstance = new bootstrap.Modal(document.getElementById('modalBayar'));
+            modalSuksesInstance = new bootstrap.Modal(document.getElementById('modalSukses'));
+            modalInstantInstance = new bootstrap.Modal(document.getElementById('modalInstant'));
+            document.getElementById('fileBukti').addEventListener('change', uploadKeImgBB);
+            document.getElementById('modalSukses').addEventListener('hide.bs.modal', resetUploadStatus);
+            dbRef.on('value', (s) => {
+                const d = s.val(); db = [];
+                if(d) Object.keys(d).forEach(k => db.push({id:k, ...d[k]}));
+                render('Semua');
             });
-        }
+        };
 
-        // Logic Input Produk
-        function toggleInstant() { document.getElementById('dataInstant').style.display = (document.getElementById('tipeKirim').value === 'instant') ? 'block' : 'none'; }
-        document.getElementById('imgUrl').addEventListener('input', function(){ if(this.value) { document.getElementById('previewImg').src=this.value; document.getElementById('previewImg').style.display='block'; document.getElementById('iconUpload').style.display='none'; }});
-        
-        document.getElementById('formProduk').addEventListener('submit', function(e){
-            e.preventDefault();
-            let idEdit = document.getElementById('indexEdit').value;
-            let varianRaw = document.getElementById('varian').value.split('\n'), varianList = [], minHarga = 999999999;
-            varianRaw.forEach(l => {
-                let p = l.split(',');
-                if(p.length >= 2) {
-                    let h = parseInt(p[1].replace(/[^0-9]/g,''));
-                    if(p[0] && h) { varianList.push({nama:p[0].trim(), harga:h, stok:(p[2]?parseInt(p[2]):0), desk:(p[3]?p[3].trim():"-")}); if(h<minHarga) minHarga=h; }
-                }
-            });
-            if(varianList.length === 0) return alert("Varian kosong!");
-            let data = {
-                nama: document.getElementById('nama').value, harga: minHarga, kat: document.getElementById('kategori').value, img: document.getElementById('imgUrl').value, varian: varianList, isHot: document.getElementById('isHot').checked,
-                tipeKirim: document.getElementById('tipeKirim').value, dataInstant: document.getElementById('dataInstant').value
-            };
-            if(idEdit) firebase.database().ref('produk/'+idEdit).update(data).then(()=>{alert("Update Sukses"); resetForm();});
-            else dbRef.push(data).then(()=>{alert("Produk Ditambah"); resetForm();});
-        });
+        // --- FUNGSI RENDER GRID (3 KOLOM SELALU) ---
+        function render(c) {
+            let data = (c === 'Semua') ? db : db.filter(p => p.kat === c);
+            let h = document.getElementById('areaProduk'); h.innerHTML = '';
+            if(data.length === 0) { document.getElementById('msgKosong').style.display = 'block'; return; }
+            document.getElementById('msgKosong').style.display = 'none';
 
-        function edit(id){
-            let p = db.find(x => x.id === id); if(!p) return;
-            document.getElementById('indexEdit').value = id;
-            document.getElementById('nama').value = p.nama; document.getElementById('kategori').value = p.kat;
-            document.getElementById('imgUrl').value = p.img; document.getElementById('previewImg').src = p.img; document.getElementById('previewImg').style.display = 'block'; document.getElementById('iconUpload').style.display = 'none';
-            document.getElementById('isHot').checked = p.isHot || false;
-            document.getElementById('tipeKirim').value = p.tipeKirim || "manual"; document.getElementById('dataInstant').value = p.dataInstant || ""; toggleInstant();
-            let vText = ""; if(p.varian) p.varian.forEach(v => { vText += `${v.nama}, ${v.harga}, ${v.stok||0}, ${v.desk||'-'}\n`; });
-            document.getElementById('varian').value = vText;
-            document.getElementById('btnSimpan').innerText = "UPDATE"; document.getElementById('btnBatal').style.display = 'block';
-        }
-        function hapus(id){ if(confirm("Hapus?")) firebase.database().ref('produk/'+id).remove(); }
-        function resetForm(){ document.getElementById('formProduk').reset(); document.getElementById('indexEdit').value=""; document.getElementById('btnSimpan').innerText="SIMPAN"; document.getElementById('btnBatal').style.display='none'; document.getElementById('previewImg').style.display='none'; document.getElementById('iconUpload').style.display='block'; toggleInstant(); }
+            const groupedData = data.reduce((acc, p) => {
+                const category = p.kat || 'Lainnya'; if (!acc[category]) acc[category] = []; acc[category].push(p); return acc;
+            }, {});
 
-        // --- LOGIC PESANAN (ORDER) ---
-        dbTrans.on('value', (snapshot) => {
-            const data = snapshot.val();
-            let tBody = document.getElementById('tabelPesanan');
-            tBody.innerHTML = "";
-            if(data) {
-                // Ubah object ke array dan urutkan dari yang terbaru (reverse)
-                let orders = Object.keys(data).map(k => data[k]).reverse(); 
+            Object.keys(groupedData).sort().forEach(kat => {
+                let icon = 'fa-cube';
+                if(kat === 'Streaming') icon = 'fa-play-circle'; else if(kat === 'Editing') icon = 'fa-pen-nib'; else if(kat === 'AI Tools') icon = 'fa-robot'; else if(kat === 'Utility') icon = 'fa-tools'; else if(kat === 'Sosmed') icon = 'fa-hashtag'; else if(kat === 'VPN') icon = 'fa-shield-alt'; else if(kat === 'Game') icon = 'fa-gamepad';
                 
-                orders.forEach(o => {
-                    tBody.innerHTML += `
-                    <tr>
-                        <td><small class="text-info font-monospace">${o.id}</small><br><small class="text-muted" style="font-size:10px;">${o.tanggal || '-'}</small></td>
-                        <td><div class="fw-bold text-white small">${o.nama}</div><small class="text-muted">${o.wa}</small></td>
-                        <td><small class="text-white">${o.produk}</small><br><small class="badge bg-dark border border-secondary text-secondary" style="font-size:9px;">${o.varian}</small></td>
-                        <td><span class="badge bg-success">Lunas</span></td>
-                        <td>
-                            <a href="https://wa.me/${o.wa}" target="_blank" class="btn btn-sm btn-outline-success py-0 px-2 mb-1"><i class="fab fa-whatsapp"></i> Chat</a>
-                            <button onclick="hapusPesanan('${o.id}')" class="btn btn-sm btn-outline-danger py-0 px-2"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>`;
+                h.innerHTML += `<div class="col-12"><div class="section-title"><i class="fas ${icon} me-2 text-primary"></i> ${kat.toUpperCase()}</div></div>`;
+                
+                groupedData[kat].forEach((p) => {
+                    let pr = (p.varian && p.varian.length > 0) ? p.varian[0].harga : (p.harga || 0);
+                    let isHotBadge = p.isHot ? '<div class="badge-top-left">HOT 🔥</div>' : '';
+                    let instantBadge = (p.tipeKirim === 'instant') ? '<div class="badge-top-right">AUTO ⚡</div>' : '';
+                    
+                    // TETAP PAKAI col-4 AGAR 3 KOLOM SEBARIS
+                    h.innerHTML += `<div class="col-4"><div class="game-card" onclick="cekProduk('${p.id}')">${isHotBadge} ${instantBadge}<div class="card-img-wrapper"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/150'"></div><div class="card-body"><div class="card-title">${p.nama}</div><span class="card-category">${p.kat}</span><div class="btn-card">Rp ${parseInt(pr).toLocaleString()}</div></div></div></div>`;
                 });
-            } else {
-                tBody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-muted">Belum ada pesanan masuk.</td></tr>`;
-            }
-        });
-
-        function hapusPesanan(id) {
-            if(confirm("Hapus riwayat pesanan ini? (Pastikan pesanan sudah selesai)")) {
-                firebase.database().ref('transaksi/' + id).remove();
-            }
-        }
-        function refreshPesanan() { 
-            // Trigger ulang load data (firebase .on sudah realtime sebenarnya)
-            window.location.reload(); 
+            });
         }
 
-        // --- LOGIC TESTIMONI ---
-        let dbSS = JSON.parse(localStorage.getItem('toko_ss')) || []; 
-        renderSS();
-        document.getElementById('fileSS').addEventListener('change', function(){const r = new FileReader();r.onload = function(e){document.getElementById('previewSS').src = e.target.result;document.getElementById('previewSS').style.display = 'block';document.getElementById('iconUploadSS').style.display = 'none';document.getElementById('base64SS').value = e.target.result;};if(this.files[0]) r.readAsDataURL(this.files[0]);});
-        document.getElementById('formTesti').addEventListener('submit', function(e){e.preventDefault();let img = document.getElementById('base64SS').value;let caption = document.getElementById('tCaption').value;if(!img) return alert("Pilih gambar!");dbSS.unshift({ img, caption });localStorage.setItem('toko_ss', JSON.stringify(dbSS));alert("Uploaded!");document.getElementById('formTesti').reset();document.getElementById('previewSS').style.display = 'none';document.getElementById('iconUploadSS').style.display = 'block';renderSS();});
-        function hapusSS(i){ if(confirm('Hapus testimoni ini?')){ dbSS.splice(i, 1); localStorage.setItem('toko_ss', JSON.stringify(dbSS)); renderSS(); }}
-        function renderSS(){let a = document.getElementById('listTesti');a.innerHTML = "";if(dbSS.length === 0){a.innerHTML='<div class="text-center text-muted small p-3">Belum ada testimoni.</div>';}else{dbSS.forEach((ss, i) => {a.innerHTML += `<div class="col-6 col-md-4"><div class="card border-0 shadow-sm"><img src="${ss.img}" class="card-img-top" style="height: 100px; object-fit: cover;"><div class="card-body p-2 bg-dark text-center"><small class="d-block text-truncate text-white mb-1" style="font-size:10px;">${ss.caption}</small><button onclick="hapusSS(${i})" class="btn btn-sm btn-danger py-0 px-2" style="font-size:10px;">Hapus</button></div></div></div>`;});}}
+        // --- FUNGSI LACAK PESANAN ---
+        function lacakPesanan() {
+            let id = document.getElementById('inputCariTRX').value.trim();
+            if(!id) return alert("Masukkan Order ID dulu!");
+            firebase.database().ref('transaksi/' + id).once('value').then((snapshot) => {
+                if(snapshot.exists()) {
+                    let data = snapshot.val();
+                    document.getElementById('resID').innerText = data.id;
+                    document.getElementById('resProduk').innerText = data.produk + " - " + data.varian;
+                    let boxBarang = document.getElementById('boxBarang');
+                    if(data.dataBarang && data.dataBarang !== "-") {
+                        boxBarang.style.display = 'block';
+                        document.getElementById('resDataBarang').innerText = data.dataBarang;
+                    } else { boxBarang.style.display = 'none'; }
+                    document.getElementById('hasilPencarian').style.display = 'block';
+                } else { alert("Order ID tidak ditemukan!"); document.getElementById('hasilPencarian').style.display = 'none'; }
+            });
+        }
+        function copyDataRes() { navigator.clipboard.writeText(document.getElementById('resDataBarang').innerText).then(() => alert("Data tersalin!")); }
 
-        function logout() { sessionStorage.removeItem('statusLogin'); window.location.href = "login.html"; }
+        // --- FUNGSI TRANSAKSI & LOGIC LAINNYA ---
+        function filterProduk(c, el) { document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active')); el.classList.add('active'); render(c); }
+        function cariProduk() { let key = document.getElementById('searchInput').value.toLowerCase(); renderGrid(db.filter(p => p.nama.toLowerCase().includes(key))); }
+        function cekProduk(id) {
+            let p = db.find(item => item.id === id); produkAktif = p;
+            document.getElementById('vNamaProduk').innerText = produkAktif.nama;
+            let h = "";
+            if(produkAktif.varian) produkAktif.varian.forEach((v, x) => {
+                let stok = v.stok !== undefined ? v.stok : 99; let habis = stok <= 0;
+                h += `<div class="variant-item ${habis ? 'disabled' : ''}" onclick="${habis ? '' : `pilihVarian(${x}, this)`}"><div><div class="variant-name">${v.nama}</div><div class="variant-stok ${habis ? 'text-danger' : 'text-success'}">${habis ? 'Habis' : 'Stok: '+stok}</div></div><div class="variant-price">Rp ${parseInt(v.harga).toLocaleString()}</div></div>`;
+            });
+            document.getElementById('listVarian').innerHTML = h; document.getElementById('vTotalHarga').innerText = "Rp 0";
+            document.getElementById('btnLanjutBayar').classList.add('disabled'); modalVarianInstance.show();
+        }
+        function pilihVarian(x, el) {
+            document.querySelectorAll('#listVarian .variant-item').forEach(e => e.classList.remove('selected')); el.classList.add('selected');
+            varianPilihan = { ...produkAktif.varian[x], index: x };
+            document.getElementById('vTotalHarga').innerText = "Rp " + parseInt(varianPilihan.harga).toLocaleString();
+            document.getElementById('btnLanjutBayar').classList.remove('disabled');
+        }
+        function bukaQRIS() {
+            modalVarianInstance.hide();
+            document.getElementById('qTotal').innerText = "Rp " + parseInt(varianPilihan.harga).toLocaleString();
+            document.getElementById('inputNama').value = ""; document.getElementById('inputWA').value = ""; document.getElementById('inputCatatan').value = "";
+            let infoInstant = document.getElementById('infoInstant');
+            infoInstant.style.display = (produkAktif.tipeKirim === 'instant') ? 'block' : 'none';
+            document.getElementById('inputCatatan').style.display = (produkAktif.formType === 'lengkap') ? 'block' : 'none';
+            let d = 600; clearInterval(timerInterval);
+            timerInterval = setInterval(() => { let m = Math.floor(d/60), s = d%60; document.getElementById('countdown').innerText = `${m}:${s<10?'0':''}${s}`; if(--d < 0) { clearInterval(timerInterval); modalBayarInstance.hide(); alert('Waktu Habis'); } }, 1000);
+            modalBayarInstance.show();
+        }
+        function tandaiLunas() {
+            let n = document.getElementById('inputNama').value, w = document.getElementById('inputWA').value;
+            if(!n || !w) return alert("Nama & WA Wajib!");
+            firebase.database().ref(`produk/${produkAktif.id}/varian/${varianPilihan.index}/stok`).transaction((c) => (c || 0) - 1);
+            clearInterval(timerInterval);
+            let uniqueID = 'TRX-' + Math.floor(Date.now() / 1000); 
+            let isiDataBarang = (produkAktif.tipeKirim === 'instant' && produkAktif.dataInstant) ? produkAktif.dataInstant : "-";
+            let transaksiBaru = { id: uniqueID, nama: n, wa: w, produk: produkAktif.nama, varian: varianPilihan.nama, harga: "Rp "+parseInt(varianPilihan.harga).toLocaleString(), catatan: document.getElementById('inputCatatan').value || "-", dataBarang: isiDataBarang, tanggal: new Date().toLocaleString() };
+            firebase.database().ref('transaksi/' + uniqueID).set(transaksiBaru);
+            trxData = transaksiBaru;
+            modalBayarInstance.hide(); 
+            if(produkAktif.tipeKirim === 'instant' && produkAktif.dataInstant) {
+                document.getElementById('textDataInstant').innerText = produkAktif.dataInstant; document.getElementById('iId').innerText = uniqueID; modalInstantInstance.show();
+            } else { 
+                document.getElementById('sId').innerText = uniqueID; modalSuksesInstance.show(); 
+            }
+        }
+        function resetUploadStatus() {
+            document.getElementById('fileBukti').value = ''; document.getElementById('linkBuktiHosting').value = ''; document.getElementById('previewBukti').style.display = 'none';
+            document.getElementById('textUploadBukti').innerText = "KLIK UNTUK UPLOAD BUKTI"; document.getElementById('textUploadBukti').className = "small text-info fw-bold";
+            document.getElementById('iconUploadBukti').className = "fas fa-cloud-upload-alt fa-lg text-info me-2"; document.getElementById('progressArea').style.display = 'none'; document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('btnKirimWA').classList.add('disabled'); document.getElementById('btnKirimWA').innerHTML = '<i class="fab fa-whatsapp me-2"></i>KIRIM KONFIRMASI (Tunggu Upload)';
+        }
+        function triggerUpload() { document.getElementById('fileBukti').click(); }
+        function uploadKeImgBB(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const textUpload = document.getElementById('textUploadBukti'); const preview = document.getElementById('previewBukti');
+            const progressArea = document.getElementById('progressArea'); const progressBar = document.getElementById('progressBar');
+            const reader = new FileReader(); reader.onload = function(e){ preview.src = e.target.result; preview.style.display = 'block'; }; reader.readAsDataURL(file);
+            textUpload.innerText = "⏳ Sedang Mengupload..."; progressArea.style.display = 'flex'; progressBar.style.width = '50%';
+            const formData = new FormData(); formData.append("image", file);
+            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData })
+            .then(response => response.json()).then(result => {
+                if (result.success) {
+                    document.getElementById('linkBuktiHosting').value = result.data.url; progressBar.style.width = '100%';
+                    setTimeout(() => {
+                        textUpload.innerText = "✅ UPLOAD SUKSES!"; textUpload.className = "small text-success fw-bold";
+                        document.getElementById('iconUploadBukti').className = "fas fa-check-circle fa-lg text-success me-2";
+                        document.getElementById('btnKirimWA').classList.remove('disabled');
+                        document.getElementById('btnKirimWA').innerHTML = '<i class="fab fa-whatsapp me-2"></i>KIRIM KONFIRMASI SEKARANG';
+                        progressBar.classList.remove('bg-info'); progressBar.classList.add('bg-success');
+                    }, 500);
+                } else { alert("Gagal Upload: " + result.error.message); }
+            }).catch(error => { alert("Error koneksi ImgBB."); });
+        }
+        function kirimWAOtomatis() {
+            let linkGambar = document.getElementById('linkBuktiHosting').value; if (!linkGambar) return alert("Harap tunggu sampai proses upload selesai!");
+            let t = `Halo Admin, saya order via Web.%0A%0A*ID:* ${trxData.id}%0A*Nama:* ${trxData.nama}%0A*Item:* ${trxData.produk}%0A*Varian:* ${trxData.varian}%0A*Total:* ${trxData.harga}%0A*Catatan:* ${trxData.catatan}%0A%0A*Bukti Transfer:*%0A${linkGambar}`;
+            window.open(`https://wa.me/${NOMOR_WA}?text=${t}`, '_blank');
+        }
+        function laporAdminInstant() {
+            let t = `Halo Admin, saya sudah ambil produk *INSTANT DELIVERY* via Web.%0A%0A*ID:* ${trxData.id}%0A*Nama:* ${trxData.nama}%0A*Item:* ${trxData.produk}%0A*Varian:* ${trxData.varian}%0A*Total:* ${trxData.harga}%0A%0A*Status:* ✅ Sukses Ambil Data`;
+            window.open(`https://wa.me/${NOMOR_WA}?text=${t}`, '_blank');
+        }
+        function copyData() { navigator.clipboard.writeText(document.getElementById('textDataInstant').innerText).then(() => alert("Data tersalin!")); }
     </script>
 </body>
 </html>
