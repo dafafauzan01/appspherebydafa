@@ -115,11 +115,15 @@
         .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
         .nav-item.active { color: #4facfe; transform: translateY(-3px); }
 
-        /* FORM INPUT KEREN */
+        /* FORM INPUT KEREN (Fix Warna) */
         .form-control-dark { 
-            background-color: #0f1219 !important; border: 1px solid #2a2f3d !important; color: white !important; 
+            background-color: #0f172a !important; 
+            border: 1px solid #4facfe !important; 
+            color: #ffffff !important; 
+            font-weight: 500;
         }
-        .form-control-dark:focus { border-color: #4facfe !important; box-shadow: 0 0 10px rgba(79, 172, 254, 0.2) !important; }
+        .form-control-dark::placeholder { color: #94a3b8 !important; opacity: 0.8; }
+        .form-control-dark:focus { border-color: #00f2fe !important; box-shadow: 0 0 10px rgba(79, 172, 254, 0.3) !important; }
         .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 12px; border-radius: 10px; }
         
         .data-instant-box { background: #0d1117; border: 1px dashed #00f2fe; color: #00f2fe; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; word-break: break-all; margin-bottom: 15px; position: relative; }
@@ -162,11 +166,9 @@
         <div class="nav-item active" onclick="location.reload()"><i class="fas fa-home"></i><span>Beranda</span></div>
         <a href="testimoni.html" class="nav-item"><i class="fas fa-star"></i><span>Ulasan</span></a>
     </div>
-
     <div class="modal fade" id="modalVarian" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 pb-0"><h5 class="fw-bold mb-0" id="vNamaProduk">Produk</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="listVarian"></div></div><div class="modal-footer d-block border-0 pt-0"><div class="d-flex justify-content-between mb-2"><small>Total:</small><span id="vTotalHarga" class="fw-bold text-primary">Rp 0</span></div><button id="btnLanjutBayar" class="btn btn-primary-custom disabled" onclick="bukaQRIS()">LANJUT BAYAR</button></div></div></div></div>
 
-    
-<div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Pembayaran QRIS</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center pt-0">
+    <div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Pembayaran QRIS</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center pt-0">
         <div class="alert alert-primary py-1 px-2 d-inline-block small mb-3"><i class="fas fa-clock"></i> <span id="countdown">10:00</span></div>
         <div class="bg-white p-2 rounded mb-3 mx-auto" style="width: 180px;"><img src="qris.jpg" class="img-fluid" onerror="this.src='https://via.placeholder.com/200?text=QRIS'"></div>
         <h4 class="fw-bold text-primary mb-3" id="qTotal">Rp 0</h4>
@@ -227,7 +229,7 @@
             });
         };
 
-        // FUNGSI RENDER GRID (INI YG BIKIN TAMPILAN JADI KOTAK ALA TOPUPGIM)
+        // FUNGSI RENDER GRID (DENGAN IKON DINAMIS)
         function render(c) {
             let data = (c === 'Semua') ? db : db.filter(p => p.kat === c);
             renderGrid(data);
@@ -243,7 +245,6 @@
             }
             document.getElementById('msgKosong').style.display = 'none';
 
-            // Mengelompokkan Kategori
             const groupedData = data.reduce((acc, p) => {
                 const category = p.kat || 'Lainnya';
                 if (!acc[category]) acc[category] = [];
@@ -254,10 +255,18 @@
             let allCategories = Object.keys(groupedData).sort();
 
             allCategories.forEach(kat => {
-                // Header Kategori
-                h.innerHTML += `<div class="col-12"><div class="section-title"><i class="fas fa-gamepad me-2 text-primary"></i> ${kat.toUpperCase()}</div></div>`;
+                // LOGIKA IKON SESUAI KATEGORI
+                let icon = 'fa-cube';
+                if(kat === 'Streaming') icon = 'fa-play-circle';
+                else if(kat === 'Editing') icon = 'fa-pen-nib';
+                else if(kat === 'AI Tools') icon = 'fa-robot';
+                else if(kat === 'Utility') icon = 'fa-tools';
+                else if(kat === 'Sosmed') icon = 'fa-hashtag';
+                else if(kat === 'VPN') icon = 'fa-shield-alt';
+                else if(kat === 'Game') icon = 'fa-gamepad';
+
+                h.innerHTML += `<div class="col-12"><div class="section-title"><i class="fas ${icon} me-2 text-primary"></i> ${kat.toUpperCase()}</div></div>`;
                 
-                // Item Produk (Grid System Bootstrap: col-4 di HP, col-lg-2 di Laptop)
                 groupedData[kat].forEach((p) => {
                     let pr = p.varian ? p.varian[0].harga : p.harga;
                     let isHotBadge = p.isHot ? '<div class="badge-top-left">HOT 🔥</div>' : '';
@@ -292,7 +301,7 @@
             renderGrid(filtered);
         }
 
-        // --- Logic Varian & Transaksi (Sama seperti sebelumnya) ---
+        // --- Logic Varian & Transaksi ---
         function resetUploadStatus() {
             document.getElementById('fileBukti').value = '';
             document.getElementById('linkBuktiHosting').value = '';
