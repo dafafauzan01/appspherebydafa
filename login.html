@@ -32,7 +32,7 @@
     <script>
         if(sessionStorage.getItem('statusLogin')==='SUKSES'){window.location.href="admin.html";}
         function cekLogin(){
-            // GANTI PASSWORD DI SINI (Default: admin123)
+            // Password disesuaikan dengan file yang kamu kirim sebelumnya
             if(document.getElementById('passInput').value==="121608"){
                 sessionStorage.setItem('statusLogin','SUKSES');
                 window.location.href="admin.html";
