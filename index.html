@@ -9,60 +9,30 @@
     
     <style>
         /* === STYLE GLOBAL === */
-        body { background-color: #0f1219; margin: 0; padding: 0; min-height: 100vh; font-family: 'Segoe UI', sans-serif; padding-bottom: 70px; }
-        
-        /* CONTAINER UTAMA (Agar tidak terlalu lebar di PC) */
-        .main-container {
-            max-width: 1100px; 
-            margin: 0 auto;
-            background-color: #0f1219;
-            min-height: 100vh;
-        }
+        body { background-color: #0f1219; margin: 0; padding: 0; min-height: 100vh; font-family: 'Segoe UI', sans-serif; padding-bottom: 80px; }
+        .main-container { max-width: 1100px; margin: 0 auto; background-color: #0f1219; min-height: 100vh; }
 
         /* HEADER */
         .app-header { background: #181b24; padding: 15px 20px; position: sticky; top: 0; z-index: 999; border-bottom: 1px solid #232733; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .logo-text { font-size: 24px; font-weight: 800; color: #fff; text-decoration: none; display: flex; align-items: center; }
-        .logo-text i { color: #4facfe; }
         .search-box { background: #232733; border: 1px solid #2d3240; border-radius: 50px; color: #fff; padding: 10px 20px; width: 100%; outline: none; margin-top: 15px; font-size: 14px; }
         .search-box:focus { border-color: #4facfe; background: #2a2f3d; }
 
-        /* BANNER FIX (AGAR LOGO TIDAK KETUTUP) */
+        /* BANNER */
         .hero-container { padding: 20px; text-align: center; }
         .hero-banner { 
-            width: auto;           /* Lebar menyesuaikan gambar */
-            max-width: 100%;       /* Mentok di lebar layar HP */
-            height: auto;          /* Tinggi proporsional */
-            max-height: 380px;     /* Batas tinggi di Laptop biar gak raksasa */
-            object-fit: contain;   /* WAJIB: Agar gambar UTUH tidak terpotong */
-            border-radius: 16px; 
+            width: auto; max-width: 100%; height: auto; max-height: 380px; 
+            object-fit: contain; border-radius: 16px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
         }
 
         /* CARD DESIGN (GRID KOTAK) */
         .section-title { font-size: 18px; font-weight: 700; color: #fff; margin: 25px 0 15px 10px; border-left: 4px solid #4facfe; padding-left: 10px; }
-        
-        .game-card {
-            background: #1e222e;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.2s;
-            cursor: pointer;
-            border: 1px solid #2a2f3d;
-            height: 100%;
-            position: relative;
-        }
+        .game-card { background: #1e222e; border-radius: 12px; overflow: hidden; transition: transform 0.2s; cursor: pointer; border: 1px solid #2a2f3d; height: 100%; position: relative; }
         .game-card:hover { transform: translateY(-5px); border-color: #4facfe; }
-        
-        .card-img-wrapper {
-            width: 100%;
-            aspect-ratio: 1/1; /* Kotak Persegi */
-            overflow: hidden;
-            border-bottom: 1px solid #2a2f3d;
-            position: relative;
-        }
+        .card-img-wrapper { width: 100%; aspect-ratio: 1/1; overflow: hidden; border-bottom: 1px solid #2a2f3d; position: relative; }
         .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         .game-card:hover .card-img-wrapper img { transform: scale(1.1); }
-        
         .card-body { padding: 10px 5px; text-align: center; }
         .card-title { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card-category { font-size: 9px; color: #8b9bb4; display: block; margin-bottom: 4px; }
@@ -72,31 +42,48 @@
         .badge-top-left { position: absolute; top: 0; left: 0; background: #ff9f43; color: #000; font-size: 8px; padding: 2px 6px; border-bottom-right-radius: 8px; font-weight: bold; z-index: 2; }
         .badge-top-right { position: absolute; top: 0; right: 0; background: #00f2fe; color: #000; font-size: 8px; padding: 2px 6px; border-bottom-left-radius: 8px; font-weight: bold; z-index: 2; }
 
-        /* FILTER & NAV */
+        /* FILTER SCROLL */
         .filter-scroll { overflow-x: auto; white-space: nowrap; padding: 0 20px 10px 20px; scrollbar-width: none; } 
-        .filter-scroll::-webkit-scrollbar { display: none; }
         .btn-filter { display: inline-block; padding: 6px 14px; margin-right: 6px; background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; color: #a0aec0; font-size: 12px; cursor: pointer; }
         .btn-filter.active { background: #4facfe; color: #000; font-weight: bold; border-color: #4facfe; }
         
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: #181b24; border-top: 1px solid #232733; display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
-        .nav-item { text-align: center; color: #64748b; font-size: 10px; cursor: pointer; text-decoration: none; }
+        /* NAVIGASI BAWAH (FIX IKON KECIL) */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            height: 70px; /* Tinggi ditambah dikit */
+            background: #181b24; border-top: 1px solid #232733; 
+            display: flex; justify-content: space-around; align-items: center; 
+            z-index: 1000; 
+        }
+        .nav-item { 
+            text-align: center; 
+            color: #64748b; 
+            font-size: 11px; /* Teks sedikit lebih besar */
+            cursor: pointer; 
+            text-decoration: none; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            width: 33%;
+        }
+        .nav-item i { 
+            font-size: 24px; /* UKURAN IKON DIPERBESAR */
+            margin-bottom: 4px; 
+            display: block;
+        }
         .nav-item.active { color: #4facfe; }
         
         /* MODALS & FORM */
         .modal-content { background: #181b24; color: #fff; border: 1px solid #2a2f3d; border-radius: 16px; }
         .variant-item { background: #1e222e; border: 1px solid #2a2f3d; border-radius: 12px; padding: 10px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; }
         .variant-item.selected { border-color: #4facfe; background: rgba(79,172,254,0.1); }
-        .variant-item.disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        /* FORM INPUT WARNA TERANG */
         .form-control-dark { background-color: #0f172a !important; border: 1px solid #4facfe !important; color: #ffffff !important; }
         .form-control-dark::placeholder { color: #94a3b8 !important; opacity: 0.8; }
-        .form-control-dark:focus { border-color: #00f2fe !important; box-shadow: 0 0 10px rgba(79, 172, 254, 0.3) !important; }
-        
         .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 10px; border-radius: 8px; }
         .data-instant-box { background: #0d1117; border: 1px dashed #00f2fe; color: #00f2fe; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all; margin-bottom: 10px; }
         
-        /* RESPONSIVE GRID (Laptop 6 Kolom, HP 3 Kolom) */
+        /* RESPONSIVE GRID */
         @media (min-width: 992px) { .col-lg-2 { width: 16.666%; } }
         @media (max-width: 768px) { .col-4 { width: 33.333%; padding: 4px; } .card-body { padding: 8px 4px; } .card-title { font-size: 10px; } .btn-card { font-size: 8px; padding: 2px 6px; } }
     </style>
@@ -130,13 +117,18 @@
     </div> 
 
     <div class="bottom-nav">
-        <div class="nav-item" onclick="new bootstrap.Modal(document.getElementById('modalCaraOrder')).show()"><i class="fas fa-book-open"></i><span>Panduan</span></div>
-        <div class="nav-item active" onclick="location.reload()"><i class="fas fa-home"></i><span>Beranda</span></div>
-        <a href="testimoni.html" class="nav-item"><i class="fas fa-star"></i><span>Ulasan</span></a>
+        <div class="nav-item" onclick="new bootstrap.Modal(document.getElementById('modalCaraOrder')).show()">
+            <i class="fas fa-book-open"></i><span>Cara Order</span>
+        </div>
+        <div class="nav-item active" onclick="location.reload()">
+            <i class="fas fa-home"></i><span>Beranda</span>
+        </div>
+        <a href="testimoni.html" class="nav-item">
+            <i class="fas fa-star"></i><span>Testimoni</span>
+        </a>
     </div>
 
     <div class="modal fade" id="modalVarian" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0 pb-0"><h5 class="fw-bold mb-0" id="vNamaProduk">Produk</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="listVarian"></div></div><div class="modal-footer d-block border-0 pt-0"><div class="d-flex justify-content-between mb-2"><small>Total:</small><span id="vTotalHarga" class="fw-bold text-primary">Rp 0</span></div><button id="btnLanjutBayar" class="btn btn-primary-custom disabled" onclick="bukaQRIS()">LANJUT BAYAR</button></div></div></div></div>
-
     <div class="modal fade" id="modalBayar" tabindex="-1" data-bs-backdrop="static"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header border-0"><h6 class="fw-bold mb-0">Pembayaran QRIS</h6><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center pt-0">
         <div class="alert alert-primary py-1 px-2 d-inline-block small mb-3"><i class="fas fa-clock"></i> <span id="countdown">10:00</span></div>
         <div class="bg-white p-2 rounded mb-3 mx-auto" style="width: 180px;"><img src="qris.jpg" class="img-fluid" onerror="this.src='https://via.placeholder.com/200?text=QRIS'"></div>
