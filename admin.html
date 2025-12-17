@@ -20,14 +20,13 @@
         .btn-primary { background: linear-gradient(45deg, #4facfe, #00f2fe); border: none; font-weight: bold; }
         .nav-pills .nav-link.active { background: #4facfe; color: #000; font-weight: bold; }
         .nav-pills .nav-link { color: #a0aec0; }
-        .upload-box { background: #13161c; border: 2px dashed #2a2f3d; cursor: pointer; transition: 0.3s; }
+        .upload-box { background: #13161c; border: 2px dashed #2a2f3d; transition: 0.3s; }
         .upload-box:hover { border-color: #4facfe; }
         .instant-box { border: 1px solid #00f2fe; background: rgba(0, 242, 254, 0.05); }
     </style>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script>
-        const IMGBB_API_KEY = "d7ec6530cf6e558c2af55e645a091e6e"; // API KEY KAMU
         const firebaseConfig = {
           apiKey: "AIzaSyB-cU3n9GQiO5dyaXgLF3mwGFPZ6ACqQds",
           authDomain: "appsphere-de73d.firebaseapp.com",
@@ -69,12 +68,12 @@
                             <div class="card-body">
                                 <form id="formProduk">
                                     <input type="hidden" id="indexEdit">
-                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('imgUrl').focus();">
+                                    <div class="mb-3 text-center rounded p-3 upload-box">
                                         <img id="previewImg" src="" style="max-height: 80px; display: none;" class="mx-auto d-block mb-2 rounded">
                                         <i id="iconUpload" class="fas fa-link fa-2x text-secondary"></i>
-                                        <div class="small text-muted mt-1" style="font-size:10px;">Paste URL Foto Disini</div>
+                                        <div class="small text-muted mt-1" style="font-size:10px;">Preview Foto</div>
                                     </div>
-                                    <input type="text" id="imgUrl" class="form-control mb-2" placeholder="URL Foto..." required>
+                                    <input type="text" id="imgUrl" class="form-control mb-2" placeholder="Paste Link Foto Produk..." required>
                                     
                                     <div class="form-check mb-2 bg-dark p-2 rounded border border-warning">
                                         <input class="form-check-input ms-1" type="checkbox" id="isHot">
@@ -146,17 +145,21 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="card">
-                            <div class="card-header text-primary"><i class="fas fa-camera me-2"></i> Upload Testimoni</div>
+                            <div class="card-header text-primary"><i class="fas fa-camera me-2"></i> Tambah Testimoni</div>
                             <div class="card-body">
-                                <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('fileSS').click()">
+                                <div class="mb-3 text-center rounded p-3 upload-box">
                                     <img id="previewSS" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mb-2 shadow-sm rounded">
-                                    <i id="iconUploadSS" class="fas fa-image fa-2x text-secondary"></i>
-                                    <div class="small text-muted mt-1" id="statusUpload">Klik Upload SS</div>
+                                    <i id="iconPreview" class="fas fa-image fa-2x text-secondary"></i>
+                                    <div class="small text-muted mt-1">Preview Gambar</div>
                                 </div>
-                                <input type="file" id="fileSS" class="d-none" accept="image/*" onchange="uploadKeImgBB(this)">
-                                <input type="hidden" id="urlSS">
-                                <input type="text" id="tCaption" class="form-control mb-3" placeholder="Judul (Cth: Done Netflix)" required>
-                                <button onclick="simpanTesti()" id="btnSimpanTesti" class="btn btn-primary w-100 btn-sm disabled">SIMPAN KE WEB</button>
+                                
+                                <label class="small text-white fw-bold mb-1">Link Gambar:</label>
+                                <input type="text" id="urlSS" class="form-control mb-2" placeholder="Paste Link (https://...)" required>
+                                
+                                <label class="small text-white fw-bold mb-1">Judul/Caption:</label>
+                                <input type="text" id="tCaption" class="form-control mb-3" placeholder="Contoh: Done Netflix" required>
+                                
+                                <button onclick="simpanTesti()" class="btn btn-primary w-100 btn-sm">SIMPAN TESTIMONI</button>
                             </div>
                         </div>
                     </div>
@@ -192,9 +195,12 @@
             });
         }
 
-        function toggleInstant() { document.getElementById('dataInstant').style.display = (document.getElementById('tipeKirim').value === 'instant') ? 'block' : 'none'; }
-        document.getElementById('imgUrl').addEventListener('input', function(){ if(this.value) { document.getElementById('previewImg').src=this.value; document.getElementById('previewImg').style.display='block'; document.getElementById('iconUpload').style.display='none'; }});
+        // Preview Produk
+        document.getElementById('imgUrl').addEventListener('input', function(){
+            if(this.value) { document.getElementById('previewImg').src=this.value; document.getElementById('previewImg').style.display='block'; document.getElementById('iconUpload').style.display='none'; }
+        });
         
+        // Simpan Produk
         document.getElementById('formProduk').addEventListener('submit', function(e){
             e.preventDefault();
             let idEdit = document.getElementById('indexEdit').value;
@@ -228,6 +234,7 @@
         }
         function hapus(id){ if(confirm("Hapus?")) firebase.database().ref('produk/'+id).remove(); }
         function resetForm(){ document.getElementById('formProduk').reset(); document.getElementById('indexEdit').value=""; document.getElementById('btnSimpan').innerText="SIMPAN"; document.getElementById('btnBatal').style.display='none'; document.getElementById('previewImg').style.display='none'; document.getElementById('iconUpload').style.display='block'; toggleInstant(); }
+        function toggleInstant() { document.getElementById('dataInstant').style.display = (document.getElementById('tipeKirim').value === 'instant') ? 'block' : 'none'; }
 
         // --- LOGIC PESANAN ---
         dbTrans.on('value', (snapshot) => {
@@ -243,7 +250,32 @@
         });
         function hapusPesanan(key) { if(confirm("Hapus?")) firebase.database().ref('transaksi/' + key).remove(); }
 
-        // --- LOGIC TESTIMONI (FIXED) ---
+        // --- LOGIC TESTIMONI (INPUT URL) ---
+        // 1. Preview Gambar saat link di-paste
+        document.getElementById('urlSS').addEventListener('input', function(){
+            if(this.value) {
+                document.getElementById('previewSS').src = this.value;
+                document.getElementById('previewSS').style.display = 'block';
+                document.getElementById('iconPreview').style.display = 'none';
+            }
+        });
+
+        // 2. Simpan ke Firebase
+        function simpanTesti() {
+            let img = document.getElementById('urlSS').value;
+            let cap = document.getElementById('tCaption').value;
+            if(!img || !cap) return alert("Link Gambar atau Judul masih kosong!");
+
+            dbTesti.push({ img: img, caption: cap }).then(() => {
+                alert("Testimoni Berhasil Disimpan!");
+                document.getElementById('urlSS').value = "";
+                document.getElementById('tCaption').value = "";
+                document.getElementById('previewSS').style.display = 'none';
+                document.getElementById('iconPreview').style.display = 'block';
+            });
+        }
+
+        // 3. Tampilkan Daftar Testimoni
         dbTesti.on('value', (snapshot) => {
             const data = snapshot.val();
             let a = document.getElementById('listTesti'); a.innerHTML = "";
@@ -254,35 +286,6 @@
                 });
             } else { a.innerHTML='<div class="text-center text-muted small p-3">Belum ada testimoni.</div>'; }
         });
-
-        function uploadKeImgBB(input) {
-            let file = input.files[0]; if(!file) return;
-            document.getElementById('statusUpload').innerText = "Mengupload...";
-            let formData = new FormData(); formData.append("image", file);
-            fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: "POST", body: formData })
-            .then(res => res.json()).then(result => {
-                if(result.success) {
-                    document.getElementById('urlSS').value = result.data.url;
-                    document.getElementById('previewSS').src = result.data.url;
-                    document.getElementById('previewSS').style.display = 'block';
-                    document.getElementById('iconUploadSS').style.display = 'none';
-                    document.getElementById('statusUpload').innerText = "Sukses! Klik Simpan.";
-                    document.getElementById('btnSimpanTesti').classList.remove('disabled');
-                } else { alert("Gagal Upload Gambar"); }
-            }).catch(e => alert("Error Koneksi"));
-        }
-
-        function simpanTesti() {
-            let img = document.getElementById('urlSS').value;
-            let cap = document.getElementById('tCaption').value;
-            if(!img || !cap) return alert("Gambar/Judul kosong!");
-            dbTesti.push({ img: img, caption: cap }).then(() => {
-                alert("Testimoni Terbit!");
-                document.getElementById('urlSS').value = ""; document.getElementById('tCaption').value = "";
-                document.getElementById('previewSS').style.display = 'none'; document.getElementById('iconUploadSS').style.display = 'block';
-                document.getElementById('statusUpload').innerText = "Upload Lagi"; document.getElementById('fileSS').value = "";
-            });
-        }
         function hapusTesti(key) { if(confirm("Hapus?")) dbTesti.child(key).remove(); }
 
         function logout() { sessionStorage.removeItem('statusLogin'); window.location.href = "login.html"; }
