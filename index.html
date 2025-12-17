@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* === TEMA WARNA (CSS VARIABLES) === */
+        /* === TEMA WARNA (VARIABLE) === */
         :root {
-            /* Warna Default (DARK MODE) */
-            --bg-body: #0f1219;
+            /* DARK MODE (DEFAULT) */
+            --bg-outer: #000000;      /* Latar Luar HP */
+            --bg-body: #0f1219;       /* Latar Dalam HP */
             --bg-header: #181b24;
             --bg-card: #1e222e;
             --bg-input: #232733;
@@ -23,27 +24,43 @@
         }
 
         [data-theme="light"] {
-            /* Warna LIGHT MODE */
-            --bg-body: #f4f6f8;
+            /* LIGHT MODE (TERANG) */
+            --bg-outer: #cbd5e1;      /* Latar Luar jadi Abu Terang */
+            --bg-body: #f8fafc;       /* Latar Dalam jadi Putih Bersih */
             --bg-header: #ffffff;
             --bg-card: #ffffff;
-            --bg-input: #f1f3f5;
-            --text-main: #1a202c;
-            --text-sec: #718096;
+            --bg-input: #f1f5f9;
+            --text-main: #1e293b;     /* Teks jadi Hitam Gelap */
+            --text-sec: #64748b;
             --border-color: #e2e8f0;
-            --accent-color: #3182ce; /* Biru lebih gelap dikit biar jelas */
+            --accent-color: #0ea5e9;  /* Biru Laut */
             --shadow-color: rgba(0,0,0,0.05);
         }
 
         /* === GLOBAL STYLE === */
         body { 
-            background-color: var(--bg-body); 
+            background-color: var(--bg-outer); /* Warna Luar */
             color: var(--text-main);
-            margin: 0; padding: 0; min-height: 100vh; 
-            font-family: 'Segoe UI', sans-serif; padding-bottom: 80px; 
-            transition: background-color 0.3s, color 0.3s;
+            margin: 0; padding: 0; 
+            min-height: 100vh; 
+            font-family: 'Segoe UI', sans-serif; 
+            padding-bottom: 80px; 
+            display: flex; justify-content: center; /* Posisi Tengah */
+            transition: background-color 0.3s ease;
         }
-        .main-container { max-width: 1100px; margin: 0 auto; background-color: var(--bg-body); min-height: 100vh; transition: 0.3s; }
+        
+        /* CONTAINER UTAMA (TAMPILAN HP) */
+        .main-container { 
+            width: 100%; 
+            max-width: 480px; 
+            background-color: var(--bg-body); /* INI KUNCINYA AGAR BERUBAH WARNA */
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            transition: background-color 0.3s ease;
+        }
 
         /* HEADER */
         .app-header { 
@@ -65,34 +82,36 @@
 
         /* TOMBOL TEMA */
         .theme-toggle {
-            cursor: pointer; font-size: 20px; color: var(--text-main);
+            cursor: pointer; font-size: 18px; color: var(--text-main);
             background: var(--bg-input); padding: 8px; border-radius: 50%;
-            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--border-color);
             transition: 0.3s;
         }
-        .theme-toggle:hover { color: var(--accent-color); transform: rotate(15deg); }
 
         /* BANNER */
         .hero-container { padding: 20px; text-align: center; }
-        .hero-banner { width: auto; max-width: 100%; height: auto; max-height: 380px; object-fit: contain; border-radius: 16px; box-shadow: 0 5px 15px var(--shadow-color); }
+        .hero-banner { 
+            width: 100%; height: auto; aspect-ratio: 2/1; 
+            object-fit: cover; border-radius: 16px; 
+            box-shadow: 0 5px 15px var(--shadow-color); 
+        }
 
         /* CARD DESIGN */
-        .section-title { font-size: 18px; font-weight: 700; color: var(--text-main); margin: 25px 0 15px 10px; border-left: 4px solid var(--accent-color); padding-left: 10px; }
+        .section-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin: 25px 0 10px 10px; border-left: 4px solid var(--accent-color); padding-left: 10px; }
         .game-card { 
             background: var(--bg-card); border-radius: 12px; overflow: hidden; 
             transition: transform 0.2s; cursor: pointer; 
             border: 1px solid var(--border-color); height: 100%; position: relative; 
             box-shadow: 0 2px 5px var(--shadow-color);
         }
-        .game-card:hover { transform: translateY(-5px); border-color: var(--accent-color); }
+        .game-card:hover { transform: translateY(-3px); border-color: var(--accent-color); }
         
         .card-img-wrapper { width: 100%; aspect-ratio: 1/1; overflow: hidden; border-bottom: 1px solid var(--border-color); position: relative; }
         .card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        .game-card:hover .card-img-wrapper img { transform: scale(1.1); }
-        
-        .card-body { padding: 10px 5px; text-align: center; }
-        .card-title { font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-category { font-size: 9px; color: var(--text-sec); display: block; margin-bottom: 4px; }
+        .card-body { padding: 8px 4px; text-align: center; }
+        .card-title { font-size: 11px; font-weight: 600; color: var(--text-main); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-category { font-size: 9px; color: var(--text-sec); display: block; margin-bottom: 3px; }
         .btn-card { background: var(--bg-input); color: var(--accent-color); font-size: 9px; padding: 2px 8px; border-radius: 20px; border: 1px solid var(--accent-color); display: inline-block; font-weight: bold; }
         
         /* BADGES */
@@ -101,25 +120,25 @@
 
         /* FILTER & NAV */
         .filter-scroll { overflow-x: auto; white-space: nowrap; padding: 0 20px 10px 20px; scrollbar-width: none; } 
-        .btn-filter { display: inline-block; padding: 6px 14px; margin-right: 6px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-sec); font-size: 12px; cursor: pointer; }
+        .btn-filter { display: inline-block; padding: 6px 14px; margin-right: 6px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-sec); font-size: 11px; cursor: pointer; }
         .btn-filter.active { background: var(--accent-color); color: #fff; font-weight: bold; border-color: var(--accent-color); }
         
         .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px;
             height: 70px; background: var(--bg-header); border-top: 1px solid var(--border-color); 
             display: flex; justify-content: space-around; align-items: center; z-index: 1000; 
         }
         .nav-item { text-align: center; color: var(--text-sec); font-size: 11px; cursor: pointer; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 25%; }
-        .nav-item i { font-size: 22px; margin-bottom: 4px; display: block; }
+        .nav-item i { font-size: 24px; margin-bottom: 4px; display: block; }
         .nav-item.active { color: var(--accent-color); }
         
         /* MODALS & FORM */
         .modal-content { background: var(--bg-header); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 16px; }
         .variant-item { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; }
         .variant-item.selected { border-color: var(--accent-color); background: rgba(79,172,254,0.1); }
-        .variant-item:hover { border-color: var(--accent-color); }
         
-        /* Input Form yang menyesuaikan tema */
+        /* Form Jelas di Light/Dark Mode */
         .form-control-dark { 
             background-color: var(--bg-input) !important; 
             border: 1px solid var(--accent-color) !important; 
@@ -130,11 +149,8 @@
         
         .btn-primary-custom { background: linear-gradient(90deg, #4facfe, #00f2fe); border: none; color: #000; font-weight: bold; width: 100%; padding: 10px; border-radius: 8px; }
         .data-instant-box { background: var(--bg-input); border: 1px dashed var(--accent-color); color: var(--accent-color); padding: 15px; border-radius: 8px; font-family: monospace; font-size: 13px; word-break: break-all; margin-bottom: 10px; }
-        .text-muted { color: var(--text-sec) !important; }
         
-        /* RESPONSIVE GRID */
-        @media (min-width: 992px) { .col-lg-2 { width: 16.666%; } }
-        @media (max-width: 768px) { .col-4 { width: 33.333%; padding: 4px; } .card-body { padding: 8px 4px; } .card-title { font-size: 10px; } .btn-card { font-size: 8px; padding: 2px 6px; } }
+        .col-4 { width: 33.333%; padding: 4px; }
     </style>
 </head>
 <body>
@@ -190,13 +206,13 @@
             <input type="text" id="inputCariTRX" class="form-control form-control-dark" placeholder="Masukkan Order ID...">
             <button class="btn btn-primary" onclick="lacakPesanan()"><i class="fas fa-search"></i></button>
         </div>
-        <div id="hasilPencarian" class="order-result">
+        <div id="hasilPencarian" class="order-result" style="display:none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-top: 10px;">
             <div class="text-center mb-3 border-bottom border-secondary pb-2"><i class="fas fa-receipt fa-2x text-primary mb-2"></i><h6 class="fw-bold">Detail Pesanan</h6></div>
             <div>
-                <div class="label-result">ID Order:</div><div class="value-result text-info" id="resID">-</div>
-                <div class="label-result">Produk:</div><div class="value-result" id="resProduk">-</div>
-                <div class="label-result">Status:</div><div class="value-result"><span class="badge bg-success">LUNAS</span></div>
-                <div id="boxBarang" style="display:none;"><div class="label-result text-warning mt-3">DATA BARANG / AKUN:</div><div class="data-instant-box mt-1" id="resDataBarang"></div><button onclick="copyDataRes()" class="btn btn-sm btn-outline-info w-100"><i class="fas fa-copy me-1"></i> Salin Data</button></div>
+                <div style="font-size:11px; color:var(--text-sec)">ID Order:</div><div class="fw-bold text-info mb-2" id="resID">-</div>
+                <div style="font-size:11px; color:var(--text-sec)">Produk:</div><div class="fw-bold mb-2" id="resProduk">-</div>
+                <div style="font-size:11px; color:var(--text-sec)">Status:</div><div class="mb-2"><span class="badge bg-success">LUNAS</span></div>
+                <div id="boxBarang" style="display:none;"><div class="text-warning mt-3 small fw-bold">DATA BARANG / AKUN:</div><div class="data-instant-box mt-1" id="resDataBarang"></div><button onclick="copyDataRes()" class="btn btn-sm btn-outline-info w-100"><i class="fas fa-copy me-1"></i> Salin Data</button></div>
             </div>
         </div>
     </div></div></div></div>
@@ -250,7 +266,7 @@
             document.getElementById('fileBukti').addEventListener('change', uploadKeImgBB);
             document.getElementById('modalSukses').addEventListener('hide.bs.modal', resetUploadStatus);
             
-            // LOAD THEME DARI MEMORI
+            // LOAD THEME
             let savedTheme = localStorage.getItem('theme') || 'dark';
             document.body.setAttribute('data-theme', savedTheme);
             updateThemeIcon(savedTheme);
@@ -273,8 +289,11 @@
         }
         function updateThemeIcon(theme) {
             let icon = document.getElementById('themeIcon');
-            if(theme === 'light') { icon.className = 'fas fa-sun text-warning'; } 
-            else { icon.className = 'fas fa-moon text-white'; }
+            if(theme === 'light') { 
+                icon.className = 'fas fa-sun text-warning'; 
+            } else { 
+                icon.className = 'fas fa-moon text-white'; 
+            }
         }
 
         // --- FUNGSI RENDER GRID ---
@@ -292,7 +311,7 @@
                     let pr = (p.varian && p.varian.length > 0) ? p.varian[0].harga : (p.harga || 0);
                     let isHotBadge = p.isHot ? '<div class="badge-top-left">HOT 🔥</div>' : '';
                     let instantBadge = (p.tipeKirim === 'instant') ? '<div class="badge-top-right">AUTO ⚡</div>' : '';
-                    h.innerHTML += `<div class="col-4 col-md-2"><div class="game-card" onclick="cekProduk('${p.id}')">${isHotBadge} ${instantBadge}<div class="card-img-wrapper"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/150'"></div><div class="card-body"><div class="card-title">${p.nama}</div><span class="card-category">${p.kat}</span><div class="btn-card">Rp ${parseInt(pr).toLocaleString()}</div></div></div></div>`;
+                    h.innerHTML += `<div class="col-4"><div class="game-card" onclick="cekProduk('${p.id}')">${isHotBadge} ${instantBadge}<div class="card-img-wrapper"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/150'"></div><div class="card-body"><div class="card-title">${p.nama}</div><span class="card-category">${p.kat}</span><div class="btn-card">Rp ${parseInt(pr).toLocaleString()}</div></div></div></div>`;
                 });
             });
         }
