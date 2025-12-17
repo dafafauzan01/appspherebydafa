@@ -21,6 +21,7 @@
         .form-check-input { background-color: #1c263d; border-color: #2a3a5a; }
         .form-check-input:checked { background-color: #4facfe; border-color: #4facfe; }
         .search-admin { background: #1c263d; border: 1px solid #2a3a5a; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .instant-box { border: 1px solid #00f2fe; background: rgba(0, 242, 254, 0.05); }
     </style>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
@@ -47,101 +48,70 @@
         </div>
     </nav>
     <div class="container">
-        <ul class="nav nav-pills mb-4 justify-content-center" id="pills-tab">
-            <li class="nav-item"><button class="nav-link active fw-bold px-4" data-bs-toggle="pill" data-bs-target="#tab-produk"><i class="fas fa-box me-2"></i> PRODUK</button></li>
-            <li class="nav-item"><button class="nav-link fw-bold px-4" data-bs-toggle="pill" data-bs-target="#tab-testi"><i class="fas fa-images me-2"></i> BUKTI (SS)</button></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab-produk">
-                <div class="row">
-                    <div class="col-md-5 mb-4">
-                        <div class="card shadow-sm">
-                            <div class="card-header"><i class="fas fa-plus-circle me-2"></i> Input Produk</div>
-                            <div class="card-body">
-                                <form id="formProduk">
-                                    <input type="hidden" id="indexEdit">
-                                    
-                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('imgUrl').focus();">
-                                        <img id="previewImg" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mb-2 rounded">
-                                        <i id="iconUpload" class="fas fa-link fa-3x text-primary"></i>
-                                        <div class="small text-muted mt-2">Masukkan URL Foto Produk</div>
-                                    </div>
-                                    <input type="text" id="imgUrl" class="form-control mb-3" placeholder="URL Foto Produk (Cth: https://firebasestorage.com/...)" required>
-                                    
-                                    <div class="form-check mb-3 p-2 rounded border border-warning bg-dark">
-                                        <input class="form-check-input ms-1" type="checkbox" id="isHot">
-                                        <label class="form-check-label text-warning fw-bold ms-2" for="isHot">🔥 Jadikan Produk HOT</label>
-                                    </div>
-
-                                    <div class="mb-2"><input type="text" id="nama" class="form-control" placeholder="Nama Produk" required></div>
-                                    <div class="mb-2">
-                                        <select id="kategori" class="form-select">
-                                            <option value="Streaming">Streaming</option><option value="Editing">Editing</option><option value="AI Tools">AI Tools</option><option value="Utility">Utility</option><option value="Sosmed">Sosmed</option><option value="VPN">VPN</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label class="small text-info mb-1">*Format: Nama, Harga, Stok, Deskripsi</label>
-                                        <textarea id="varian" class="form-control" rows="4" placeholder="Contoh:&#10;1 Bulan, 25000, 10, Garansi Full" style="font-family: monospace; font-size: 11px;"></textarea>
-                                    </div>
-                                    
-                                    <div class="mb-3 p-2 rounded border border-primary" style="background: #1c263d;"><select id="jenisForm" class="form-select form-select-sm border-0 bg-transparent text-white"><option value="standar">Form Standar (Nama & WA)</option><option value="lengkap">Form Lengkap (+Catatan)</option></select></div>
-                                    <button type="submit" id="btnSimpan" class="btn btn-primary w-100 fw-bold py-2">SIMPAN PRODUK</button>
-                                    <button type="button" id="btnBatal" onclick="resetForm()" class="btn btn-secondary w-100 mt-2" style="display:none;">BATAL</button>
-                                </form>
+        <div class="row">
+            <div class="col-md-5 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header"><i class="fas fa-plus-circle me-2"></i> Input Produk</div>
+                    <div class="card-body">
+                        <form id="formProduk">
+                            <input type="hidden" id="indexEdit">
+                            
+                            <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('imgUrl').focus();">
+                                <img id="previewImg" src="" style="max-height: 100px; display: none;" class="mx-auto d-block mb-2 rounded">
+                                <i id="iconUpload" class="fas fa-link fa-3x text-primary"></i>
+                                <div class="small text-muted mt-2">Masukkan URL Foto Produk</div>
                             </div>
-                        </div>
-                        <div class="text-center mt-4"><a href="index.html" class="btn btn-outline-primary btn-sm rounded-pill px-4">Lihat Toko <i class="fas fa-arrow-right"></i></a></div>
-                    </div>
-                    
-                    <div class="col-md-7">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-dark text-white border-bottom border-secondary">Daftar Produk</div>
-                            <div class="card-body p-0">
-                                <div class="p-3">
-                                    <div class="position-relative">
-                                        <input type="text" id="searchInput" class="search-admin form-control" placeholder="Cari Nama Produk..." onkeyup="filterTabel()">
-                                        <i class="fas fa-search position-absolute" style="right: 15px; top: 12px; color: #4facfe;"></i>
-                                    </div>
-                                </div>
+                            <input type="text" id="imgUrl" class="form-control mb-3" placeholder="URL Foto Produk (Cth: https://...)" required>
+                            
+                            <div class="form-check mb-3 p-2 rounded border border-warning bg-dark">
+                                <input class="form-check-input ms-1" type="checkbox" id="isHot">
+                                <label class="form-check-label text-warning fw-bold ms-2" for="isHot">🔥 Jadikan Produk HOT</label>
+                            </div>
+
+                            <div class="mb-2"><input type="text" id="nama" class="form-control" placeholder="Nama Produk" required></div>
+                            <div class="mb-2">
+                                <select id="kategori" class="form-select">
+                                    <option value="Streaming">Streaming</option><option value="Editing">Editing</option><option value="AI Tools">AI Tools</option><option value="Utility">Utility</option><option value="Sosmed">Sosmed</option><option value="VPN">VPN</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="small text-info mb-1">*Format: Nama, Harga, Stok, Deskripsi</label>
+                                <textarea id="varian" class="form-control" rows="4" placeholder="Contoh:&#10;1 Bulan, 25000, 10, Garansi Full" style="font-family: monospace; font-size: 11px;"></textarea>
+                            </div>
+                            
+                            <div class="mb-3 p-3 rounded border border-secondary bg-dark">
+                                <label class="small text-muted fw-bold mb-2">METODE PENGIRIMAN:</label>
+                                <select id="tipeKirim" class="form-select mb-2" onchange="toggleInstant()">
+                                    <option value="manual">Manual (Kirim Bukti ke WA)</option>
+                                    <option value="instant">Otomatis / Instant Delivery ⚡</option>
+                                </select>
                                 
-                                <table class="table table-hover align-middle mb-0 text-white">
-                                    <thead class="table-light"><tr><th class="ps-3">Produk</th><th class="text-end pe-3">Aksi</th></tr></thead>
-                                    <tbody id="tabelData"></tbody>
-                                </table>
-                                <div id="kosongMsg" class="text-center p-5 small text-muted">Memuat data...</div>
+                                <div id="boxInstant" class="p-2 rounded instant-box" style="display: none;">
+                                    <label class="small text-info fw-bold mb-1"><i class="fas fa-bolt"></i> Data Produk (Email/Pass/Link):</label>
+                                    <textarea id="dataInstant" class="form-control" rows="3" placeholder="Data ini akan MUNCUL OTOMATIS setelah user bayar.&#10;Contoh:&#10;Email: user@gmail.com&#10;Pass: 123456" style="font-size: 11px; color: #00f2fe;"></textarea>
+                                </div>
                             </div>
-                        </div>
+
+                            <button type="submit" id="btnSimpan" class="btn btn-primary w-100 fw-bold py-2">SIMPAN PRODUK</button>
+                            <button type="button" id="btnBatal" onclick="resetForm()" class="btn btn-secondary w-100 mt-2" style="display:none;">BATAL</button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="tab-testi">
-                <div class="row">
-                    <div class="col-md-5 mb-4">
-                        <div class="card shadow-sm">
-                            <div class="card-header text-primary"><i class="fas fa-camera me-2"></i> Upload Screenshot</div>
-                            <div class="card-body">
-                                <form id="formTesti">
-                                    <div class="mb-3 text-center rounded p-3 upload-box" onclick="document.getElementById('fileSS').click()">
-                                        <img id="previewSS" src="" style="max-height: 150px; display: none;" class="mx-auto d-block mb-2 shadow-sm rounded">
-                                        <i id="iconUploadSS" class="fas fa-image fa-3x text-primary"></i>
-                                        <div class="small text-muted mt-2">Upload Bukti Transaksi</div>
-                                    </div>
-                                    <input type="file" id="fileSS" class="d-none" accept="image/*"><input type="hidden" id="base64SS">
-                                    <div class="mb-3"><input type="text" id="tCaption" class="form-control" placeholder="Judul (Cth: Done Netflix Kak Budi)" required></div>
-                                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">UPLOAD SCREENSHOT</button>
-                                </form>
-                            </div>
+            
+            <div class="col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white border-bottom border-secondary">Daftar Produk</div>
+                    <div class="card-body p-0">
+                        <div class="p-3">
+                            <input type="text" id="searchInput" class="search-admin form-control" placeholder="Cari Nama Produk..." onkeyup="filterTabel()">
                         </div>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-dark text-white border-bottom border-secondary">Galeri Bukti</div>
-                            <div class="card-body p-0">
-                                <div class="row g-2 p-2" id="listTesti"></div>
-                                <div id="kosongTesti" class="text-center p-5 small text-muted">Belum ada screenshot.</div>
-                            </div>
-                        </div>
+                        <table class="table table-hover align-middle mb-0 text-white">
+                            <thead class="table-light"><tr><th class="ps-3">Produk</th><th class="text-end pe-3">Aksi</th></tr></thead>
+                            <tbody id="tabelData"></tbody>
+                        </table>
+                        <div id="kosongMsg" class="text-center p-5 small text-muted">Memuat data...</div>
                     </div>
                 </div>
             </div>
@@ -151,29 +121,20 @@
     <script>
         let db = []; 
         dbRef.on('value', (snapshot) => {
-            const dataObj = snapshot.val();
-            db = [];
-            if (dataObj) {
-                Object.keys(dataObj).forEach(key => db.push({ id: key, ...dataObj[key] }));
-                document.getElementById('kosongMsg').style.display = 'none';
-            } else {
-                document.getElementById('kosongMsg').style.display = 'block';
-            }
+            const dataObj = snapshot.val(); db = [];
+            if (dataObj) Object.keys(dataObj).forEach(key => db.push({ id: key, ...dataObj[key] }));
+            document.getElementById('kosongMsg').style.display = (db.length === 0) ? 'block' : 'none';
             renderTabel(db); 
         });
 
+        function toggleInstant() {
+            let tipe = document.getElementById('tipeKirim').value;
+            document.getElementById('boxInstant').style.display = (tipe === 'instant') ? 'block' : 'none';
+        }
+
         document.getElementById('imgUrl').addEventListener('input', function(){
             const url = this.value.trim();
-            const preview = document.getElementById('previewImg');
-            const icon = document.getElementById('iconUpload');
-            if (url) {
-                preview.src = url;
-                preview.style.display = 'block';
-                icon.style.display = 'none';
-            } else {
-                preview.style.display = 'none';
-                icon.style.display = 'block';
-            }
+            if (url) { document.getElementById('previewImg').src = url; document.getElementById('previewImg').style.display = 'block'; document.getElementById('iconUpload').style.display = 'none'; }
         });
 
         document.getElementById('formProduk').addEventListener('submit', function(e){
@@ -181,108 +142,66 @@
             let idEdit = document.getElementById('indexEdit').value;
             let n = document.getElementById('nama').value;
             let k = document.getElementById('kategori').value;
-            let f = document.getElementById('jenisForm').value;
             let im = document.getElementById('imgUrl').value;
             let rv = document.getElementById('varian').value;
             let ih = document.getElementById('isHot').checked;
+            let tk = document.getElementById('tipeKirim').value;
+            let di = document.getElementById('dataInstant').value;
 
             let lv = [], ln = rv.split('\n'), ht = 999999999;
             ln.forEach(l => {
                 let p = l.split(',');
                 if(p.length >= 2){
-                    let vn = p[0].trim();
                     let vh = parseInt(p[1].trim().replace(/[^0-9]/g,''));
-                    let vs = p[2] ? parseInt(p[2].trim().replace(/[^0-9]/g,'')) : 0; 
-                    let vd = p[3] ? p[3].trim() : "-";
-                    if(vn && vh){
-                        lv.push({nama:vn, harga:vh, stok:vs, desk:vd});
-                        if(vh < ht) ht = vh;
-                    }
+                    if(p[0] && vh){ lv.push({nama:p[0].trim(), harga:vh, stok:(p[2]?parseInt(p[2]):0), desk:(p[3]?p[3].trim():"-")}); if(vh < ht) ht = vh; }
                 }
             });
 
             if(lv.length === 0) return alert("Varian kosong!");
-            if(im.trim() === '') return alert("URL Foto wajib diisi!"); 
+            if(tk === 'instant' && di.trim() === '') return alert("Data Instant wajib diisi!");
 
-            let d = {nama:n, harga:ht, kat:k, formType:f, img:im, varian:lv, isHot:ih};
+            let d = { nama:n, harga:ht, kat:k, img:im, varian:lv, isHot:ih, tipeKirim:tk, dataInstant:di };
             document.getElementById('btnSimpan').innerText = "Menyimpan...";
-            document.getElementById('btnSimpan').disabled = true;
-
-            if(idEdit){
-                firebase.database().ref('produk/' + idEdit).update(d).then(() => { alert("Sukses Update!"); resetForm(); }).finally(() => document.getElementById('btnSimpan').disabled = false);
-            } else {
-                dbRef.push(d).then(() => { alert("Produk Ditambah!"); resetForm(); }).finally(() => document.getElementById('btnSimpan').disabled = false);
-            }
+            
+            if(idEdit){ firebase.database().ref('produk/' + idEdit).update(d).then(() => { alert("Update Sukses!"); resetForm(); }); } 
+            else { dbRef.push(d).then(() => { alert("Produk Ditambah!"); resetForm(); }); }
         });
 
-        function filterTabel() {
-            const keyword = document.getElementById('searchInput').value.toLowerCase();
-            const filteredData = db.filter(p => p.nama.toLowerCase().includes(keyword));
-            renderTabel(filteredData);
-            
-            const kosongMsg = document.getElementById('kosongMsg');
-            if (filteredData.length === 0 && keyword.length > 0) {
-                kosongMsg.style.display = 'block';
-                kosongMsg.innerText = "Produk tidak ditemukan.";
-            } else if (db.length === 0) {
-                 kosongMsg.style.display = 'block';
-                 kosongMsg.innerText = "Data Kosong.";
-            } else {
-                kosongMsg.style.display = 'none';
-            }
-        }
-
         function renderTabel(data) {
-            let t = document.getElementById('tabelData'); 
-            t.innerHTML = "";
-            
+            let t = document.getElementById('tabelData'); t.innerHTML = "";
             data.forEach((p) => {
                 let hotBadge = p.isHot ? '<i class="fas fa-fire text-warning ms-1"></i>' : '';
-                t.innerHTML += `<tr><td class="ps-3"><div class="d-flex align-items-center"><img src="${p.img}" width="40" height="40" class="rounded me-2" style="object-fit:cover;"><div><div class="fw-bold small text-white">${p.nama} ${hotBadge}</div><span class="badge bg-primary" style="font-size:10px;">${p.kat}</span></div></div></td><td class="text-end pe-3"><button onclick="edit('${p.id}')" class="btn btn-sm btn-dark border-secondary me-1"><i class="fas fa-pen text-warning"></i></button><button onclick="hapus('${p.id}')" class="btn btn-sm btn-dark border-secondary"><i class="fas fa-trash text-danger"></i></button></td></tr>`;
+                let instantBadge = (p.tipeKirim === 'instant') ? '<span class="badge bg-info text-dark ms-1">⚡ Auto</span>' : '';
+                t.innerHTML += `<tr><td class="ps-3"><div class="d-flex align-items-center"><img src="${p.img}" width="40" height="40" class="rounded me-2" style="object-fit:cover;"><div><div class="fw-bold small text-white">${p.nama} ${hotBadge} ${instantBadge}</div><span class="badge bg-primary" style="font-size:10px;">${p.kat}</span></div></div></td><td class="text-end pe-3"><button onclick="edit('${p.id}')" class="btn btn-sm btn-dark border-secondary me-1"><i class="fas fa-pen text-warning"></i></button><button onclick="hapus('${p.id}')" class="btn btn-sm btn-dark border-secondary"><i class="fas fa-trash text-danger"></i></button></td></tr>`;
             });
         }
 
         function hapus(id){ if(confirm("Hapus?")) firebase.database().ref('produk/' + id).remove(); }
-
         function edit(id){
-            let p = db.find(item => item.id === id);
-            if(!p) return;
+            let p = db.find(item => item.id === id); if(!p) return;
             document.getElementById('indexEdit').value = id;
             document.getElementById('nama').value = p.nama;
             document.getElementById('kategori').value = p.kat;
-            document.getElementById('jenisForm').value = p.formType || "standar";
             document.getElementById('isHot').checked = p.isHot || false;
-            
-            let t = "";
-            if(p.varian) { p.varian.forEach(v => { let stokShow = v.stok !== undefined ? v.stok : 0; t += `${v.nama}, ${v.harga}, ${stokShow}, ${v.desk || '-'}\n`; }); }
+            document.getElementById('tipeKirim').value = p.tipeKirim || "manual";
+            document.getElementById('dataInstant').value = p.dataInstant || "";
+            toggleInstant();
+            let t = ""; if(p.varian) { p.varian.forEach(v => { t += `${v.nama}, ${v.harga}, ${v.stok||0}, ${v.desk||'-'}\n`; }); }
             document.getElementById('varian').value = t;
-            
             document.getElementById('imgUrl').value = p.img;
-            document.getElementById('previewImg').src = p.img;
-            document.getElementById('previewImg').style.display = 'block';
-            document.getElementById('iconUpload').style.display = 'none';
-
+            document.getElementById('previewImg').src = p.img; document.getElementById('previewImg').style.display = 'block'; document.getElementById('iconUpload').style.display = 'none';
             document.getElementById('btnSimpan').innerText = "UPDATE PRODUK";
             document.getElementById('btnBatal').style.display = 'block';
         }
-
         function resetForm(){
             document.getElementById('formProduk').reset();
             document.getElementById('indexEdit').value = "";
-            document.getElementById('previewImg').style.display = 'none';
-            document.getElementById('iconUpload').style.display = 'block';
-            document.getElementById('btnSimpan').innerText = "SIMPAN PRODUK";
-            document.getElementById('btnSimpan').disabled = false;
-            document.getElementById('btnBatal').style.display = 'none';
+            document.getElementById('previewImg').style.display = 'none'; document.getElementById('iconUpload').style.display = 'block';
+            document.getElementById('btnSimpan').innerText = "SIMPAN PRODUK"; document.getElementById('btnBatal').style.display = 'none';
+            toggleInstant();
         }
-        
-        let dbSS = JSON.parse(localStorage.getItem('toko_ss')) || []; 
-        renderSS();
-        document.getElementById('fileSS').addEventListener('change', function(){const r = new FileReader();r.onload = function(e){document.getElementById('previewSS').src = e.target.result;document.getElementById('previewSS').style.display = 'block';document.getElementById('iconUploadSS').style.display = 'none';document.getElementById('base64SS').value = e.target.result;};if(this.files[0]) r.readAsDataURL(this.files[0]);});
-        document.getElementById('formTesti').addEventListener('submit', function(e){e.preventDefault();let img = document.getElementById('base64SS').value;let caption = document.getElementById('tCaption').value;if(!img) return alert("Pilih gambar!");dbSS.unshift({ img, caption });localStorage.setItem('toko_ss', JSON.stringify(dbSS));alert("Uploaded!");document.getElementById('formTesti').reset();document.getElementById('previewSS').style.display = 'none';document.getElementById('iconUploadSS').style.display = 'block';document.getElementById('base64SS').value = "";renderSS();});
-        function hapusSS(i){ if(confirm('Hapus screenshot ini?')){ dbSS.splice(i, 1); localStorage.setItem('toko_ss', JSON.stringify(dbSS)); renderSS(); }}
-        function renderSS(){let a = document.getElementById('listTesti');a.innerHTML = "";if(dbSS.length === 0){document.getElementById('kosongTesti').style.display = 'block';}else{document.getElementById('kosongTesti').style.display = 'none';dbSS.forEach((ss, i) => {a.innerHTML += `<div class="col-6 col-md-4"><div class="card border-0 shadow-sm h-100"><img src="${ss.img}" class="card-img-top" style="height: 150px; object-fit: cover; border-bottom: 1px solid #1c263d;"><div class="card-body p-2 d-flex justify-content-between align-items-center" style="background:#1c263d;"><small class="text-truncate text-white" style="font-size:11px;">${ss.caption}</small><button onclick="hapusSS(${i})" class="btn btn-sm text-danger"><i class="fas fa-trash"></i></button></div></div></div>`;});}}
         function logout() { sessionStorage.removeItem('statusLogin'); window.location.href = "login.html"; }
+        function filterTabel() { renderTabel(db.filter(p => p.nama.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()))); }
     </script>
 </body>
 </html>
